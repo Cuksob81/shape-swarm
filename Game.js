@@ -36,17 +36,35 @@ const Items=[
  Item('Prospector','$','CoinBonus',.15,10,{IsPct:1,Unit:'coins'}),Item('Scholar','★','XpBonus',.2,10,{IsPct:1,Unit:'XP'}),
  Item('Fortune','♣','Luck',.1,12,{IsPct:1,Unit:'luck'})
 ];
-const StatCaps={Bolts:10,Dodge:.6,CritChance:1,Pierce:6,Leech:.5,BlastRadius:90,Armor:15};
-const TierMult=[1,1.6,2.4,3.6],CostMult=[1,1.7,2.8,4.5];
-const RarityNames=['Common','Rare','Epic','Legendary'],RarityColors=['#8f98c8','#4ff0d6','#9b7bff','#ffc857'];
-const Percent=V=>Math.round(V*100)+'%';
-const StatList=[
- ['Damage','Damage',V=>Round2(V)],['FireRate','Fire rate',V=>Round2(V)+'/s'],['Bolts','Bolts',V=>V],['Range','Range',V=>V],
- ['BoltSpeed','Bolt speed',V=>V],['Pierce','Pierce',V=>V],['CritChance','Crit chance',Percent],['CritDamage','Crit damage',V=>Percent(2+V)],
- ['MaxHp','Max HP',V=>V],['Regen','Regen',V=>Round2(V)+'/s'],['Armor','Armor',V=>V],['Dodge','Dodge',Percent],
- ['Speed','Speed',V=>V],['PickupRange','Pickup range',V=>V],['Leech','Leech',Percent],['Thorns','Thorns',V=>V],
- ['Knockback','Knockback',V=>V],['BlastRadius','Blast radius',V=>V],['CoinBonus','Coin bonus',Percent],['XpBonus','XP bonus',Percent],['Luck','Luck',Percent]
+
+const StatCaps = {Bolts: 100, Dodge: 0.50, CritChance: 1, Pierce: 10, Leech: 1, BlastRadius: 1000, Armor: 100};
+const TierMult = [1, 1.6, 2.4, 3.6 ], CostMult = [1, 1.7, 2.8, 4.5];
+const RarityNames = ['C', 'U', 'R', 'E', 'L', 'M'], RarityColors = ['#FFFFFF', '#1EFF00', '#0070DD', '#A335EE', '#FF8000', '#1FDBDE'];
+const Percent = V => Math.round(V * 100) + '%';
+const StatList = [
+ ['Damage', 'Damage', V => Round2(V)],
+ ['FireRate', 'Fire rate', V => Round2(V) + '/s'],
+ ['Bolts', 'Bolts', V => V],
+ ['Range', 'Range', V => V],
+ ['BoltSpeed', 'Bolt speed', V => V],
+ ['Pierce', 'Pierce', V => V],
+ ['CritChance', 'Crit chance', Percent],
+ ['CritDamage', 'Crit damage', V => Percent(2 + V)],
+ ['MaxHp', 'Max HP', V => V],
+ ['Regen', 'Regen', V => Round2(V) + '/s'],
+ ['Armor', 'Armor', V => V],
+ ['Dodge', 'Dodge', Percent],
+ ['Speed', 'Speed', V => V],
+ ['PickupRange', 'Pickup range', V => V],
+ ['Leech', 'Leech', Percent],
+ ['Thorns', 'Thorns', V => V],
+ ['Knockback', 'Knockback', V => V],
+ ['BlastRadius', 'Blast radius', V => V],
+ ['CoinBonus', 'Coin bonus', Percent],
+ ['XpBonus', 'XP bonus', Percent],
+ ['Luck', 'Luck', Percent]
 ];
+
 function ItemValue(It,Tier){return It.IsInt?[1,1,2,3][Tier]*It.Value:Round2(It.Value*TierMult[Tier])}
 function ItemText(It,Tier){const V=ItemValue(It,Tier);return '+'+(It.IsPct?Percent(V):Round2(V))+' '+It.Unit}
 function OfferPrice(Offer){return Math.round(Offer.Item.Cost*(1+Wave*.1)*CostMult[Offer.Tier])}

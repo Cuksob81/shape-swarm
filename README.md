@@ -1,78 +1,67 @@
 # Shape Swarm
 
-A single-player, endless wave survival game in the style of Brotato, drawn entirely with simple glowing shapes. It runs in any modern browser on phone or PC, with no build step and no dependencies.
+**Shape Swarm** is a browser-based, top-down arena survival game. Fight through increasingly dangerous waves of geometric enemies, collect coins, choose upgrades, and see how long your core can survive.
 
-## How to play
+## Play
 
-- Your core fires automatically at the nearest enemy. You only move.
-- Survive each wave while collecting coins and XP from defeated enemies.
-- After every wave, pick free level-up upgrades, then spend coins in the shop.
-- Waves never end. Enemies get tougher and spawn faster each wave, and a boss appears every 10th wave.
-- Your best wave is saved in the browser.
+- **GitHub Pages:** Add your published game URL here: `https://YOUR-USERNAME.github.io/YOUR-REPOSITORY/`
+- **Run locally:** Download or clone this repository and open `index.html` in a modern browser.
 
 ## Controls
 
-The game switches automatically based on what you used last.
-
-| Device | Control |
+| Platform | Controls |
 | --- | --- |
-| Phone or tablet | Fixed on-screen joystick in the bottom-left. Touch anywhere in the left half of the screen to use it. |
-| PC | `W` `A` `S` `D` or the arrow keys |
+| Desktop | Move with **WASD** or the **arrow keys**. |
+| Mobile / touch | Use the on-screen joystick near the bottom-center of the screen. |
+| Sound | Press **M** to toggle sound effects. Sound starts after your first interaction, as required by most browsers. |
 
-## Enemies
+## Gameplay
 
-| Shape | Behavior |
-| --- | --- |
-| Red circle | Chases you |
-| Yellow triangle | Fast |
-| Purple square | Slow and tough |
-| Pink hexagon | Keeps its distance and shoots |
-| Large red octagon | Boss. Fires rings of bullets |
+- Survive escalating waves of geometric enemies.
+- Your core automatically targets nearby enemies and fires projectiles.
+- Collect coins dropped by defeated enemies.
+- Choose free upgrades when you level up.
+- Spend coins between waves on upgrades; reroll the shop offers for an increasing cost.
+- Build up offensive and defensive stats, including damage, fire rate, projectile count, critical hits, piercing, health, regeneration, movement speed, and more.
+- Face stronger enemy types and periodic boss waves.
+- Track your best wave, saved locally in your browser when storage is available.
 
-Enemies are solid. They block you, push each other apart and knock you back on contact.
+## Sound effects
 
-## Upgrades
+Sound effects are synthesized in JavaScript with the **Web Audio API**, so the game does not need separate sound files. Effects provide feedback for shooting, hits, enemy defeats, coin pickups, taking damage, leveling up, wave transitions, shop actions, and game over. Press **M** to mute or unmute.
 
-Upgrades come in four rarities: Common, Rare, Epic and Legendary. Higher rarities give bigger bonuses and cost more, and Luck and wave number make them more likely.
+## Project files
 
-Stats you can raise: damage, fire rate, bolts, range, bolt speed, pierce, crit chance, crit damage, max HP, regen, armor, dodge, speed, pickup range, leech, thorns, knockback, blast radius, coin bonus, XP bonus and luck.
+```text
+.
+├── index.html   # HTML entry point
+├── Style.css    # Layout and visual styling
+├── Game.js      # Game logic, rendering, controls, and generated sound effects
+└── README.md    # Project description and instructions
+```
 
-## Files
+## Built with
 
-| File | Purpose |
-| --- | --- |
-| `index.html` | Page structure. Must stay lowercase so GitHub Pages opens it by default. |
-| `Style.css` | Menus, shop cards and overlays |
-| `Game.js` | All game logic and drawing |
-| `Readme.md` | This file |
+- HTML5
+- CSS
+- Vanilla JavaScript
+- HTML Canvas for game rendering
+- Web Audio API for generated sound effects
+- `localStorage` for the best-wave record (when browser storage is available)
 
-## Deploy on GitHub Pages
+No game engine, build step, or external audio assets are required. The page optionally loads the Chakra Petch font from Google Fonts; a system-font fallback is included.
 
-1. Create a repository and upload all files to the root.
-2. Open Settings, then Pages.
-3. Under Build and deployment, choose Deploy from a branch, select `main` and `/ (root)`, then save.
-4. After a minute or two the game is live at `https://YOUR-USERNAME.github.io/REPO-NAME/`.
+## GitHub Pages setup
 
-## Make the QR code
+1. Keep `index.html`, `Style.css`, `Game.js`, and `README.md` in the same published directory.
+2. In the repository, open **Settings → Pages**.
+3. Select the branch you use (usually `main`) and the correct folder (`/ (root)` if these files are at the repository root, or `/game` if they are inside a `game` folder).
+4. Save, then open the published URL. If you update files and the old version remains visible, hard-refresh with **Ctrl+F5** or check the published folder and filename casing.
 
-1. Copy your live Pages link.
-2. Paste it into any QR code generator.
-3. Download the image and print or share it. Scanning it opens the game directly.
+## Status
 
-Test the link on a phone before printing.
+This is an ongoing project. Features and balance may change as the game is developed. Test desktop keyboard controls and mobile touch controls after significant changes.
 
-## Tuning
+## License
 
-Most balance values are near the top of `Game.js`.
-
-- Wave length: `WaveLength()`
-- Enemy stats: `EnemyTypes`
-- Upgrades and their values: `Items`
-- Stat limits: `StatCaps`
-- Rarity strength and price: `TierMult` and `CostMult`
-- Starting stats: inside `NewRun()`
-
-## Notes
-
-- The game needs an internet connection only to load the Chakra Petch font. It falls back to the device font if that fails.
-- Best wave is stored with `localStorage`. If the browser blocks storage, the game still works but will not remember your score.
+No license has been specified yet. Unless a license is added, normal copyright restrictions apply to reuse of this repository's code and assets.

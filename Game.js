@@ -1,67 +1,86 @@
 /* Shape Swarm - game logic */
-const GetById=Id=>document.getElementById(Id);
-const Canvas=GetById('GameCanvas'),Context=Canvas.getContext('2d'),Ui=GetById('UiLayer');
-const Arena=1000,Tau=Math.PI*2,PlayerRadius=14,JoyRadius=60;
-let Width,Height,Dpr,Zoom,SafeTop=0,SafeBottom=0;
+const GetById = Id => document.getElementById(Id);
+const Canvas = GetById('GameCanvas'), Context = Canvas.getContext('2d'), Ui = GetById('UiLayer');
+const Arena = 1000, Tau = Math.PI * 2, PlayerRadius = 14, JoyRadius = 60;
+let Width, Height, Dpr, Zoom, SafeTop = 0, SafeBottom = 0;
+
 function Resize(){
- Dpr=devicePixelRatio||1;Width=innerWidth;Height=innerHeight;
- Canvas.width=Width*Dpr;Canvas.height=Height*Dpr;Zoom=Math.min(Width,Height)/560;
- SafeTop=GetById('TopProbe').offsetHeight;SafeBottom=GetById('BottomProbe').offsetHeight;
+ Dpr = devicePixelRatio || 1;
+ Width = innerWidth;
+ Height = innerHeight;
+ Canvas.width = Width * Dpr;
+ Canvas.height = Height * Dpr;
+ Zoom = Math.min(Width, Height) / 560;
+ SafeTop = GetById('TopProbe').offsetHeight;
+ SafeBottom = GetById('BottomProbe').offsetHeight;
 }
-addEventListener('resize',Resize);Resize();
-const Clamp=(V,Lo,Hi)=>Math.max(Lo,Math.min(Hi,V)),Round2=V=>Math.round(V*100)/100,RandRange=(Lo,Hi)=>Lo+Math.random()*(Hi-Lo);
+
+addEventListener('resize', Resize);
+Resize();
+
+const Clamp = (V, Lo, Hi) => Math.max(Lo, Math.min(Hi, V)), Round2 = V => Math.round(V * 100) / 100, RandRange = (Lo, Hi) => Lo + Math.random() * (Hi - Lo);
 function StorageGet(Key){try{return localStorage.getItem(Key)}catch(Err){return null}}
-function StorageSet(Key,V){try{localStorage.setItem(Key,V)}catch(Err){}}
-let BestWave=+StorageGet('ShapeSwarmBest')||0;
+function StorageSet(Key, V){try{localStorage.setItem(Key, V)}catch(Err){}}
+let BestWave =+ StorageGet('ShapeSwarmBest') || 0;
 
 /* ---------- data ---------- */
-const EnemyTypes=[
- {Hp:14,Speed:60,Radius:11,Damage:6,Sides:0,Color:'#ff5d73',CoinValue:1,XpValue:1},
- {Hp:9,Speed:105,Radius:10,Damage:5,Sides:3,Color:'#ffc857',CoinValue:1,XpValue:1},
- {Hp:50,Speed:38,Radius:17,Damage:11,Sides:4,Color:'#9b7bff',CoinValue:3,XpValue:3},
- {Hp:25,Speed:48,Radius:13,Damage:6,Sides:6,Color:'#ff8fd0',CoinValue:2,XpValue:2},
- {Hp:450,Speed:45,Radius:38,Damage:15,Sides:8,Color:'#ff3b3b',CoinValue:30,XpValue:40}
+const EnemyTypes = [
+ {Hp: 10, Speed: 50, Radius: 10, Damage: 10, Sides: 0, Color: '#ff5d73', CoinValue: 1, XpValue: 1},
+ {Hp: 5, Speed: 100, Radius: 5, Damage: 10, Sides: 3, Color: '#ffc857', CoinValue: 1, XpValue: 1},
+ {Hp: 20, Speed: 30, Radius: 15, Damage: 5, Sides: 5, Color: '#9b7bff', CoinValue: 3, XpValue: 3},
+ {Hp: 10, Speed: 50, Radius: 10, Damage: 10, Sides: 8, Color: '#ff8fd0', CoinValue: 2, XpValue: 2},
+ {Hp: 500, Speed: 20, Radius: 50, Damage: 20, Sides: 10, Color: '#ff3b3b', CoinValue: 30, XpValue: 40}
 ];
-const Item=(Name,Glyph,Key,Value,Cost,Opts)=>({Name,Glyph,Key,Value,Cost,...Opts});
-const Items=[
- Item('Power','●','Damage',3,14,{Unit:'damage'}),Item('Overclock','▲','FireRate',.3,14,{Unit:'fire rate'}),
- Item('Extra bolt','⬢','Bolts',1,36,{IsInt:1,Unit:'projectile'}),Item('Scope','◉','Range',30,10,{Unit:'range'}),
- Item('Accelerator','▷','BoltSpeed',60,10,{Unit:'bolt speed'}),Item('Piercer','◇','Pierce',1,22,{IsInt:1,Unit:'pierce'}),
- Item('Precision','◎','CritChance',.08,12,{IsPct:1,Unit:'crit chance'}),Item('Lethality','✦','CritDamage',.3,14,{IsPct:1,Unit:'crit damage'}),
- Item('Hull','■','MaxHp',12,12,{Unit:'max HP'}),Item('Repair','✚','Regen',1,14,{Unit:'HP per second'}),
- Item('Plating','▣','Armor',1,16,{IsInt:1,Unit:'armor'}),Item('Evasion','◌','Dodge',.05,16,{IsPct:1,Unit:'dodge'}),
- Item('Thrusters','▶','Speed',12,10,{Unit:'move speed'}),Item('Magnet','◐','PickupRange',40,8,{Unit:'pickup range'}),
- Item('Leech','◆','Leech',.06,14,{IsPct:1,Unit:'heal on kill'}),Item('Thorns','▼','Thorns',4,14,{Unit:'thorn damage'}),
- Item('Impact','◀','Knockback',40,10,{Unit:'knockback'}),Item('Blast','✱','BlastRadius',20,18,{Unit:'blast radius'}),
- Item('Prospector','$','CoinBonus',.15,10,{IsPct:1,Unit:'coins'}),Item('Scholar','★','XpBonus',.2,10,{IsPct:1,Unit:'XP'}),
- Item('Fortune','♣','Luck',.1,12,{IsPct:1,Unit:'luck'})
+const Item = (Name, Glyph, Key, Value, Cost, Opts) => ({Name, Glyph, Key, Value, Cost, ...Opts});
+const Items = [
+ Item('Power', '●', 'Damage', 5, 20, {Unit: 'Damage'}),
+ Item('Overclock', '▲', 'FireRate', 0.25, 40, {Unit: 'Fire Rate'}),
+ Item('Extra bolt', '⬢', 'Projectile', 1, 70, {IsInt: 1, Unit: 'Projectile'}),
+ Item('Scope', '◉', 'Range', 25, 30, {Unit: 'Range'}),
+ Item('Accelerator', '▷', 'ProjectileSpeed', 50, 50, {Unit: 'Bolt Speed'}),
+ Item('Piercer', '◇', 'Piercing', 1, 70, {IsInt: 1, Unit: 'Pierce'}),
+ Item('Precision', '◎', 'CriticalChance', 0.05, 20, {IsPct: 1, Unit: 'Crit Chance'}),
+ Item('Lethality', '✦', 'CriticalDamage', 0.25, 35, {IsPct: 1, Unit: 'Crit Damage'}),
+ Item('Hull', '■', 'MaximumHealth', 10, 20, {Unit: 'Maximum Health'}),
+ Item('Repair', '✚', 'Regeneration', 1, 45, {Unit: 'Health Regeneration'}),
+ Item('Plating', '▣', 'Defense', 1, 65,{IsInt: 1, Unit: 'Defense'}),
+ Item('Evasion', '◌', 'Evasion', 0.05, 16, {IsPct: 1, Unit: 'Evasion'}),
+ Item('Thrusters', '▶', 'MovementSpeed', 10, 25, {Unit: 'Movement Speed'}),
+ Item('Magnet', '◐', 'PickupRange', 50, 20, {Unit: 'Pickup Range'}),
+ Item('Leech', '◆', 'Lifesteal', 0.05, 45, {IsPct: 1, Unit:'Lifesteal'}),
+ Item('Thorns', '▼', 'Thorn', 5, 25, {Unit: 'Thorn Damage'}),
+ Item('Impact', '◀', 'Knockback', 10, 20, {Unit: 'Knockback'}),
+ Item('Blast', '✱', 'BlastRadius', 25, 35, {Unit: 'Blast Radius'}),
+ Item('Prospector', '$', 'CoinsBonus', 0.10, 40, {IsPct: 1, Unit: 'Coins'}),
+ Item('Scholar', '★', 'ExperienceBonus', 0.10, 50, {IsPct: 1, Unit: 'Experience'}),
+ Item('Fortune', '♣', 'Luck', 0.125, 20, {IsPct: 1, Unit: 'Luck'})
 ];
 
-const StatCaps = {Bolts: 100, Dodge: 0.50, CritChance: 1, Pierce: 10, Leech: 1, BlastRadius: 1000, Armor: 100};
-const TierMult = [1, 1.6, 2.4, 3.6 ], CostMult = [1, 1.7, 2.8, 4.5];
-const RarityNames = ['C', 'U', 'R', 'E', 'L', 'M'], RarityColors = ['#FFFFFF', '#1EFF00', '#0070DD', '#A335EE', '#FF8000', '#1FDBDE'];
+const StatCaps = {Bolts: 100, Dodge: 0.75, CritChance: 0.90, Pierce: 10, Leech: 0.90, BlastRadius: 750, Range: 500};
+const TierMult = [1.00, 1.50, 2.00, 2.50, 4.00, 5.00], CostMult = [1.00, 1.75, 2.35, 3.25, 4.35, 5.50];
+const RarityNames = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythical'], RarityColors = ['#FFFFFF', '#1EFF00', '#0070DD', '#A335EE', '#FF8000', '#1FDBDE'];
 const Percent = V => Math.round(V * 100) + '%';
 const StatList = [
  ['Damage', 'Damage', V => Round2(V)],
- ['FireRate', 'Fire rate', V => Round2(V) + '/s'],
- ['Bolts', 'Bolts', V => V],
+ ['FireRate', 'Fire Rate', V => Round2(V) + '/s'],
+ ['Projectile', 'Projectile', V => V],
  ['Range', 'Range', V => V],
- ['BoltSpeed', 'Bolt speed', V => V],
- ['Pierce', 'Pierce', V => V],
- ['CritChance', 'Crit chance', Percent],
- ['CritDamage', 'Crit damage', V => Percent(2 + V)],
- ['MaxHp', 'Max HP', V => V],
- ['Regen', 'Regen', V => Round2(V) + '/s'],
- ['Armor', 'Armor', V => V],
- ['Dodge', 'Dodge', Percent],
- ['Speed', 'Speed', V => V],
- ['PickupRange', 'Pickup range', V => V],
- ['Leech', 'Leech', Percent],
- ['Thorns', 'Thorns', V => V],
+ ['ProjectileSpeed', 'Projectile Speed', V => V],
+ ['Piercing', 'Piercing', V => V],
+ ['CriticalChance', 'Critical Chance', Percent],
+ ['CriticalDamage', 'Critical Damage', V => Percent(2 + V)],
+ ['MaximumHealth', 'Maximum Health', V => V],
+ ['Regeneration', 'Regeneration', V => Round2(V) + '/s'],
+ ['Defense', 'Defense', V => V],
+ ['Evasion', 'Evasion', Percent],
+ ['MovementSpeed', 'Movement Speed', V => V],
+ ['PickupRange', 'Pickup Pange', V => V],
+ ['Lifesteal', 'Lifesteal', Percent],
+ ['Thorn', 'Thorn', V => V],
  ['Knockback', 'Knockback', V => V],
- ['BlastRadius', 'Blast radius', V => V],
- ['CoinBonus', 'Coin bonus', Percent],
- ['XpBonus', 'XP bonus', Percent],
+ ['BlastRadius', 'Blast Radius', V => V],
+ ['CoinsBonus', 'Coins Bonus', Percent],
+ ['ExperienceBonus', 'Experience Bonus', Percent],
  ['Luck', 'Luck', Percent]
 ];
 

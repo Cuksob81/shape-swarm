@@ -330,8 +330,8 @@ to {
     animation:none;
 }
 
-#Rotate {
-    display:none;
+@media (orientation:portrait) and (max-width:700px) {
+    #Rotate { display:flex; }
 }
 
 h1 {
@@ -421,6 +421,52 @@ function StorageGet(Key){try{return localStorage.getItem(Key)}catch(Err){return 
 function StorageSet(Key, V){try{localStorage.setItem(Key, V)}catch(Err){}}
 let Best = {};
 try{Best = JSON.parse(StorageGet('ShapeSwarmBest2') || '{}') || {}}catch(Err){Best = {}}
+
+
+/* ---------- sound effects (generated in-browser; no extra files) ---------- */
+let AudioEngine = null, SoundEnabled = true, LastHitSound = 0;
+function InitAudio(){
+ try{
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if(!AudioContextClass) return null;
+  if(!AudioEngine) AudioEngine = new AudioContextClass();
+  if(AudioEngine.state === 'suspended') AudioEngine.resume();
+  return AudioEngine;
+ }catch(Err){return null}
+}
+function PlayTone(Frequency, Duration = .07, Type = 'sine', Volume = .025, EndFrequency = Frequency, Delay = 0){
+ if(!SoundEnabled) return;
+ const Audio = InitAudio(); if(!Audio) return;
+ const Start = Audio.currentTime + Delay, Osc = Audio.createOscillator(), Gain = Audio.createGain();
+ Osc.type = Type;
+ Osc.frequency.setValueAtTime(Math.max(1, Frequency), Start);
+ Osc.frequency.exponentialRampToValueAtTime(Math.max(1, EndFrequency), Start + Duration);
+ Gain.gain.setValueAtTime(.0001, Start);
+ Gain.gain.exponentialRampToValueAtTime(Math.max(.0001, Volume), Start + .008);
+ Gain.gain.exponentialRampToValueAtTime(.0001, Start + Duration);
+ Osc.connect(Gain); Gain.connect(Audio.destination); Osc.start(Start); Osc.stop(Start + Duration + .015);
+}
+function PlaySfx(Name){
+ if(!SoundEnabled) return;
+ switch(Name){
+  case 'Shoot': PlayTone(620,.045,'triangle',.009,360); break;
+  case 'Hit': {const Now = performance.now(); if(Now - LastHitSound < 65) return; LastHitSound = Now; PlayTone(230,.045,'square',.008,120); break}
+  case 'Kill': PlayTone(420,.07,'triangle',.016,180); break;
+  case 'Pickup': PlayTone(760,.09,'sine',.02,1120); break;
+  case 'Hurt': PlayTone(170,.16,'sawtooth',.025,65); break;
+  case 'LevelUp': PlayTone(520,.12,'triangle',.025,780); PlayTone(780,.16,'triangle',.022,1180,.1); break;
+  case 'Wave': PlayTone(330,.12,'triangle',.02,500); PlayTone(500,.16,'triangle',.02,660,.12); break;
+  case 'Shop': PlayTone(430,.06,'sine',.016,580); break;
+  case 'GameOver': PlayTone(300,.25,'triangle',.03,110); PlayTone(180,.35,'sine',.02,65,.2); break;
+  case 'Victory': PlayTone(520,.12,'triangle',.025,780); PlayTone(780,.12,'triangle',.025,1040,.12); PlayTone(1040,.2,'sine',.025,1320,.24); break;
+ }
+}
+function ToggleSound(){
+ SoundEnabled = !SoundEnabled;
+ if(SoundEnabled){InitAudio(); PlaySfx('Shop')}
+ if(typeof ShowBanner === 'function') ShowBanner(SoundEnabled ? 'Sound on' : 'Sound off', 'Press M to toggle sound', SoundEnabled ? '#4ff0d6' : '#8f98c8');
+}
+addEventListener('pointerdown', InitAudio, {once:true});
 
 /* ---------- data ---------- */
 const ElemNames = ['Fire', 'Water', 'Earth', 'Wind'];
@@ -717,6 +763,7 @@ const EffSpeed = () => Stats.MovementSpeed * (1 + .04 * Elem.Wind);
 
 function DamageEnemy(En, Amount, IsCrit, Vx, Vy, Color, Knock){
  if(En.Dead) return;
+ PlaySfx('Hit');
  En.Hp -= Amount; En.Flash = .1; RunStats.Damage += Amount;
  FloatText(En.X, En.Y - En.Radius, Math.round(Amount), IsCrit ? '#ffc857' : (Color || '#ffffff'));
  Burst(En.X, En.Y, En.Color, 3, 90, .35);
@@ -735,6 +782,7 @@ function ApplyElement(En, Bt){
 }
 
 function KillEnemy(En){
+ PlaySfx('Kill');
  const Type = EnemyTypes[En.Kind], Xp = Type.XpValue * (En.Elite ? 3 : 1) * (1 + (Diff - 1) * .25) * (1 + Stats.ExperienceBonus);
  const Pieces = En.Kind === 4 ? 8 : 1;
  for(let I = 0; I < Pieces; I++){
@@ -751,7 +799,7 @@ function KillEnemy(En){
 function GainXp(V){
  Player.Xp += V;
  while(Player.Xp >= XpNeeded(Player.Level)){
-  Player.Xp -= XpNeeded(Player.Level); Player.Level++; Pending++;
+  Player.Xp -= XpNeeded(Player.Level); Player.Level++; Pending++; PlaySfx('LevelUp');
   FloatText(Player.X, Player.Y - 34, 'LEVEL UP', '#ffc857'); Ring(Player.X, Player.Y, '#ffc857', 60, .6);
  }
 }
@@ -760,7 +808,7 @@ function HurtPlayer(Amount, Source){
  if(Player.Inv > 0 || Mode !== 'play') return false;
  if(Math.random() < Stats.Evasion){FloatText(Player.X, Player.Y - 22, 'dodge', '#4ff0d6'); Player.Inv = .25; return false}
  const Def = EffDefense(), Taken = Math.max(1, Amount * (1 - Def / (Def + 25)));
- Player.Hp -= Taken; Player.Inv = .5; Shake = Math.max(Shake, 6);
+ Player.Hp -= Taken; Player.Inv = .5; Shake = Math.max(Shake, 6); PlaySfx('Hurt');
  FloatText(Player.X, Player.Y - 22, '-' + Math.round(Taken), '#ff5d73'); Burst(Player.X, Player.Y, '#ff5d73', 8, 150, .4);
  if(Source){
   const Dx = Player.X - Source.X, Dy = Player.Y - Source.Y, Len = Math.hypot(Dx, Dy) || 1;
@@ -791,7 +839,7 @@ function Volley(Target){
   });
   LastElem = Name;
  }
- Shots += Count; Player.Cooldown = 1 / EffFireRate(); Player.Recoil = 1;
+ Shots += Count; Player.Cooldown = 1 / EffFireRate(); Player.Recoil = 1; PlaySfx('Shoot');
  Burst(Player.X + Math.cos(Aim) * 20, Player.Y + Math.sin(Aim) * 20, Elems[LastElem].Color, 3, 120, .15);
 }
 
@@ -834,6 +882,7 @@ function Pause(){
 
 Ui.addEventListener('click', Ev => {
  const Button = Ev.target.closest('button'); if(!Button) return;
+ PlaySfx('Shop');
  const Data = Button.dataset;
  if(Data.pick !== undefined && Mode === 'level'){
   ApplyOffer(Offers[+Data.pick]); Pending--;
@@ -855,6 +904,7 @@ Ui.addEventListener('click', Ev => {
 const FormatTime = S => Math.floor(S / 60) + ':' + String(Math.floor(S % 60)).padStart(2, '0');
 
 function GameOver(Won){
+ PlaySfx(Won ? 'Victory' : 'GameOver');
  Mode = 'over';
  const Key = ModeKey, Score = Math.floor(RunStats.Time);
  if(Won || Score > (Best[Key] || 0)){if(Score > (Best[Key] || 0)){Best[Key] = Score; StorageSet('ShapeSwarmBest2', JSON.stringify(Best))}}
@@ -910,6 +960,7 @@ Canvas.addEventListener('contextmenu', Ev => Ev.preventDefault());
 
 addEventListener('keydown', Ev => {
  const Key = Ev.key.toLowerCase();
+ if(Key === 'm' && !Ev.repeat){ToggleSound(); return}
  if(('wasd'.includes(Key) && Key.length === 1) || Key.startsWith('arrow')){InputMode = 'key'; Keys[Key] = 1; Ev.preventDefault()}
  else if(Key === 'q' && Mode === 'play') AutoAim = !AutoAim;
  else if((Key === 'p' || Key === 'escape') && !Ev.repeat) Pause();

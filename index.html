@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#0d1020">
 <title>Shape Swarm</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
@@ -450,16 +449,16 @@ function PlayTone(Frequency, Duration = .07, Type = 'sine', Volume = .025, EndFr
 function PlaySfx(Name){
  if(!SoundEnabled) return;
  switch(Name){
-  case 'Shoot': PlayTone(620,.045,'triangle',.009,360); break;
-  case 'Hit': {const Now = performance.now(); if(Now - LastHitSound < 65) return; LastHitSound = Now; PlayTone(230,.045,'square',.008,120); break}
-  case 'Kill': PlayTone(420,.07,'triangle',.016,180); break;
-  case 'Pickup': PlayTone(760,.09,'sine',.02,1120); break;
-  case 'Hurt': PlayTone(170,.16,'sawtooth',.025,65); break;
-  case 'LevelUp': PlayTone(520,.12,'triangle',.025,780); PlayTone(780,.16,'triangle',.022,1180,.1); break;
-  case 'Wave': PlayTone(330,.12,'triangle',.02,500); PlayTone(500,.16,'triangle',.02,660,.12); break;
-  case 'Shop': PlayTone(430,.06,'sine',.016,580); break;
-  case 'GameOver': PlayTone(300,.25,'triangle',.03,110); PlayTone(180,.35,'sine',.02,65,.2); break;
-  case 'Victory': PlayTone(520,.12,'triangle',.025,780); PlayTone(780,.12,'triangle',.025,1040,.12); PlayTone(1040,.2,'sine',.025,1320,.24); break;
+  case 'Shoot': PlayTone(620,.045,'triangle',.035,360); break;
+  case 'Hit': {const Now = performance.now(); if(Now - LastHitSound < 65) return; LastHitSound = Now; PlayTone(230,.045,'square',.03,120); break}
+  case 'Kill': PlayTone(420,.07,'triangle',.05,180); break;
+  case 'Pickup': PlayTone(760,.09,'sine',.06,1120); break;
+  case 'Hurt': PlayTone(170,.16,'sawtooth',.07,65); break;
+  case 'LevelUp': PlayTone(520,.12,'triangle',.06,780); PlayTone(780,.16,'triangle',.05,1180,.1); break;
+  case 'Wave': PlayTone(330,.12,'triangle',.05,500); PlayTone(500,.16,'triangle',.05,660,.12); break;
+  case 'Shop': PlayTone(430,.06,'sine',.045,580); break;
+  case 'GameOver': PlayTone(300,.25,'triangle',.06,110); PlayTone(180,.35,'sine',.05,65,.2); break;
+  case 'Victory': PlayTone(520,.12,'triangle',.05,780); PlayTone(780,.12,'triangle',.05,1040,.12); PlayTone(1040,.2,'sine',.05,1320,.24); break;
  }
 }
 function ToggleSound(){

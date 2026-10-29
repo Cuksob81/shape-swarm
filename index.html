@@ -449,16 +449,16 @@ function PlayTone(Frequency, Duration = .07, Type = 'sine', Volume = .025, EndFr
 function PlaySfx(Name){
  if(!SoundEnabled) return;
  switch(Name){
-  case 'Shoot': PlayTone(620,.045,'triangle',.035,360); break;
-  case 'Hit': {const Now = performance.now(); if(Now - LastHitSound < 65) return; LastHitSound = Now; PlayTone(230,.045,'square',.03,120); break}
-  case 'Kill': PlayTone(420,.07,'triangle',.05,180); break;
-  case 'Pickup': PlayTone(760,.09,'sine',.06,1120); break;
-  case 'Hurt': PlayTone(170,.16,'sawtooth',.07,65); break;
-  case 'LevelUp': PlayTone(520,.12,'triangle',.06,780); PlayTone(780,.16,'triangle',.05,1180,.1); break;
-  case 'Wave': PlayTone(330,.12,'triangle',.05,500); PlayTone(500,.16,'triangle',.05,660,.12); break;
-  case 'Shop': PlayTone(430,.06,'sine',.045,580); break;
-  case 'GameOver': PlayTone(300,.25,'triangle',.06,110); PlayTone(180,.35,'sine',.05,65,.2); break;
-  case 'Victory': PlayTone(520,.12,'triangle',.05,780); PlayTone(780,.12,'triangle',.05,1040,.12); PlayTone(1040,.2,'sine',.05,1320,.24); break;
+  case 'Shoot': PlayTone(620,.045,'triangle',.12,360); break;
+  case 'Hit': {const Now = performance.now(); if(Now - LastHitSound < 65) return; LastHitSound = Now; PlayTone(230,.045,'square',.12,120); break}
+  case 'Kill': PlayTone(420,.07,'triangle',.16,180); break;
+  case 'Pickup': PlayTone(760,.09,'sine',.18,1120); break;
+  case 'Hurt': PlayTone(170,.16,'sawtooth',.20,65); break;
+  case 'LevelUp': PlayTone(520,.12,'triangle',.18,780); PlayTone(780,.16,'triangle',.15,1180,.1); break;
+  case 'Wave': PlayTone(330,.12,'triangle',.16,500); PlayTone(500,.16,'triangle',.16,660,.12); break;
+  case 'Shop': PlayTone(430,.06,'sine',.14,580); break;
+  case 'GameOver': PlayTone(300,.25,'triangle',.18,110); PlayTone(180,.35,'sine',.15,65,.2); break;
+  case 'Victory': PlayTone(520,.12,'triangle',.16,780); PlayTone(780,.12,'triangle',.16,1040,.12); PlayTone(1040,.2,'sine',.16,1320,.24); break;
  }
 }
 function ToggleSound(){

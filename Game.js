@@ -202,7 +202,7 @@ function ShowMenu(){
 
 /* ---------- input ---------- */
 let Joy=null;const Keys={};
-const JoyX=()=>Math.max(90,Width*.16),JoyY=()=>Height-SafeBottom-100;
+const JoyX=()=>Width/2,JoyY=()=>Height-SafeBottom-100;
 function JoySet(Ev){
  let Dx=Ev.clientX-JoyX(),Dy=Ev.clientY-JoyY();const Len=Math.hypot(Dx,Dy);
  if(Len>JoyRadius){Dx=Dx/Len*JoyRadius;Dy=Dy/Len*JoyRadius}
@@ -210,7 +210,7 @@ function JoySet(Ev){
 }
 Canvas.addEventListener('pointerdown',Ev=>{
  if(Ev.pointerType!=='mouse')InputMode='touch';
- if(InputMode!=='touch'||Ev.clientX>Width*.55||Joy)return;
+ if(InputMode!=='touch'||Math.abs(Ev.clientX-JoyX())>JoyRadius||Ev.clientY<Height*.5||Joy)return;
  Joy={Id:Ev.pointerId,Dx:0,Dy:0};JoySet(Ev);
  try{Canvas.setPointerCapture(Ev.pointerId)}catch(Err){}
 });

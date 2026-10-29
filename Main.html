@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0d1020">
+<title>Shape Swarm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --Bg:#0d1020;
+    --Ink:#e8ecff;
+    --Dim:#8f98c8;
+    --Cyan:#4ff0d6;
+    --Coral:#ff5d73;
+    --Amber:#ffc857;
+    --Violet:#9b7bff;
+}
+
+* {
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-user-select:none;
+    user-select:none;
+}
+
+html,body {
+    margin:0;
+    height:100%;
+    background:var(--Bg);
+    color:var(--Ink);
+    font-family:'Chakra Petch',system-ui,sans-serif;
+    overflow:hidden;
+    overscroll-behavior:none;
+}
+
+canvas {
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    touch-action:none;
+    display:block;
+}
+
+#TopProbe,#BottomProbe {
+    position:fixed;
+    left:0;
+    width:1px;
+    visibility:hidden;
+}
+
+#TopProbe {
+    top:0;
+    height:env(safe-area-inset-top,0px);
+}
+
+#BottomProbe {
+    bottom:0;
+    height:env(safe-area-inset-bottom,0px);
+}
+
+#UiLayer {
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(8,10,24,.92);
+    overflow:auto;
+    padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));
+    animation:FadeIn .25s;
+}
+
+#UiLayer.On {
+    display:flex;
+}
+
+.Box {
+    width:100%;
+    max-width:560px;
+    margin:auto;
+    text-align:center;
+}
+
+.Box.Wide {
+    max-width:920px;
+}
+
+h1 {
+    font-size:clamp(40px,10vw,64px);
+    margin:0 0 6px;
+    line-height:1;
+}
+
+h2 {
+    font-size:28px;
+    margin:0 0 4px;
+}
+
+h3 {
+    font-size:14px;
+    margin:14px 0 6px;
+    color:var(--Dim);
+    font-weight:500;
+}
+
+p {
+    color:var(--Dim);
+    margin:6px 0 14px;
+    line-height:1.4;
+}
+
+.Btn {
+    font:inherit;
+    font-weight:700;
+    font-size:20px;
+    color:#07131a;
+    background:var(--Cyan);
+    border:0;
+    border-radius:10px;
+    padding:14px 28px;
+    cursor:pointer;
+    min-height:52px;
+    transition:transform .12s,filter .12s;
+}
+
+.Btn:hover {
+    filter:brightness(1.12);
+}
+
+.Btn:active {
+    transform:scale(.96);
+}
+
+.Btn.Alt {
+    background:transparent;
+    color:var(--Ink);
+    border:2px solid var(--Violet);
+    font-size:16px;
+    padding:10px 16px;
+    min-height:44px;
+}
+
+.Btn:disabled {
+    opacity:.4;
+    cursor:default;
+}
+
+.Chips {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+}
+
+.Chip {
+    font:inherit;
+    font-weight:700;
+    color:var(--Ink);
+    background:#151a36;
+    border:2px solid #2a3166;
+    border-radius:10px;
+    padding:8px 14px;
+    min-width:108px;
+    cursor:pointer;
+    line-height:1.25;
+}
+
+.Chip small {
+    display:block;
+    color:var(--Dim);
+    font-weight:500;
+    font-size:12px;
+}
+
+.Chip.Sel {
+    border-color:var(--Chip,var(--Cyan));
+    background:#1f2650;
+    box-shadow:0 0 14px var(--Chip,var(--Cyan))55;
+}
+
+.Cards {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin:14px 0;
+}
+
+.Card {
+    font:inherit;
+    flex:1 1 128px;
+    max-width:166px;
+    min-height:200px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    text-align:center;
+    color:var(--Ink);
+    background:linear-gradient(#1b2150,#11152e);
+    border:2px solid;
+    border-radius:12px;
+    padding:12px 8px;
+    cursor:pointer;
+    transition:transform .12s,background .12s;
+}
+
+.Card.In {
+    animation:PopIn .35s both;
+    animation-delay:calc(var(--Index)*70ms);
+}
+
+.Card:hover {
+    transform:translateY(-4px);
+}
+
+.Card:active {
+    transform:scale(.97);
+}
+
+.Card .Glyph {
+    font-size:34px;
+    line-height:1.1;
+}
+
+.Card em {
+    font-style:normal;
+    font-size:12px;
+    font-weight:700;
+}
+
+.Card b {
+    font-size:17px;
+    line-height:1.15;
+}
+
+.Card span {
+    color:var(--Dim);
+    font-size:13px;
+    line-height:1.3;
+}
+
+.Row {
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.StatGrid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:4px 14px;
+    font-size:12px;
+    color:var(--Dim);
+    text-align:left;
+    margin:8px 0 6px;
+}
+
+.StatGrid b {
+    color:var(--Ink);
+    float:right;
+}
+
+.Summary {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px 18px;
+    text-align:left;
+    margin:0 auto 20px;
+    max-width:320px;
+    color:var(--Dim);
+}
+
+.Summary b {
+    color:var(--Ink);
+    float:right;
+}
+
+details {
+    margin-top:10px;
+}
+
+summary {
+    color:var(--Dim);
+    font-size:14px;
+    cursor:pointer;
+}
+
+#Rotate {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:9;
+    background:var(--Bg);
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:24px;
+}
+
+#Rotate b {
+    font-size:64px;
+    display:block;
+}
+
+from {
+    opacity:0;
+    transform:translateY(14px) scale(.94);
+}
+
+to {
+    opacity:1;
+    transform:none;
+}
+
+from {
+    opacity:0;
+}
+
+to {
+    opacity:1;
+}
+
+#UiLayer,.Card.In {
+    animation:none;
+}
+
+#Rotate {
+    display:flex;
+}
+
+h1 {
+    font-size:34px;
+}
+
+h2 {
+    font-size:20px;
+}
+
+p {
+    margin:2px 0 8px;
+    font-size:13px;
+}
+
+.Cards {
+    margin:8px 0;
+    gap:6px;
+}
+
+.Card {
+    min-height:150px;
+    padding:8px 6px;
+    flex-basis:110px;
+}
+
+.Card .Glyph {
+    font-size:26px;
+}
+
+.Card b {
+    font-size:14px;
+}
+
+.Card span {
+    font-size:11px;
+}
+
+.Btn {
+    padding:8px 20px;
+    min-height:40px;
+    font-size:17px;
+}
+
+.Chip {
+    padding:5px 10px;
+    min-width:90px;
+}
+
+.StatGrid {
+    grid-template-columns:1fr 1fr;
+}
+</style>
+</head>
+
+<body>
+<canvas id="GameCanvas"></canvas>
+<div id="TopProbe"></div>
+<div id="BottomProbe"></div>
+<div id="UiLayer" class="On"></div>
+<div id="Rotate"><div><b>⟳</b><h2>Rotate your device</h2><p>Shape Swarm plays in landscape on phones.</p></div></div>
+
+<script>
+/* Shape Swarm - game logic */
+const GetById = Id => document.getElementById(Id);
+const Canvas = GetById('GameCanvas'), Context = Canvas.getContext('2d'), Ui = GetById('UiLayer');
+const Arena = 2400, Tau = Math.PI * 2, PlayerRadius = 14, JoyRadius = 55;
+let Width, Height, Dpr, Zoom, SafeTop = 0, SafeBottom = 0;
+
+function Resize(){
+ Dpr = devicePixelRatio || 1;
+ Width = innerWidth;
+ Height = innerHeight;
+ Canvas.width = Width * Dpr;
+ Canvas.height = Height * Dpr;
+ Zoom = Math.min(Width, Height) / 520;
+ SafeTop = GetById('TopProbe').offsetHeight;
+ SafeBottom = GetById('BottomProbe').offsetHeight;
+}
+
+addEventListener('resize', Resize);
+Resize();
+
+const Clamp = (V, Lo, Hi) => Math.max(Lo, Math.min(Hi, V)), Round2 = V => Math.round(V * 100) / 100, RandRange = (Lo, Hi) => Lo + Math.random() * (Hi - Lo);
+const Shuffle = A => A.slice().sort(() => Math.random() - .5);
+function StorageGet(Key){try{return localStorage.getItem(Key)}catch(Err){return null}}
+function StorageSet(Key, V){try{localStorage.setItem(Key, V)}catch(Err){}}
+let Best = {};
+try{Best = JSON.parse(StorageGet('ShapeSwarmBest2') || '{}') || {}}catch(Err){Best = {}}
+
+/* ---------- data ---------- */
+const ElemNames = ['Fire', 'Water', 'Earth', 'Wind'];
+const Elems = {
+ Fire: {Glyph: '▲', Color: '#ff7a3d', Desc: 'Burns enemies over time. +8% damage per level.'},
+ Water: {Glyph: '●', Color: '#4fb4ff', Desc: 'Slows enemies. +6% fire rate per level.'},
+ Earth: {Glyph: '■', Color: '#c9a066', Desc: 'Heavy bolts that knock back and stun. +1.5 defense per level.'},
+ Wind: {Glyph: '◆', Color: '#8ff5d2', Desc: 'Fast piercing bolts. +4% move speed per level.'}
+};
+
+const Modes = {
+ Standard: {Total: 1800, RoundLen: 180, Step: .22, Info: '30:00'},
+ Quickplay: {Total: 600, RoundLen: 120, Step: .40, Info: '10:00'},
+ Endless: {Total: 0, RoundLen: 90, Step: .25, Info: 'No timer'}
+};
+
+const EnemyTypes = [
+ {Hp: 18, Speed: 60, Radius: 11, Damage: 8, Sides: 0, Color: '#ff5d73', XpValue: 3},
+ {Hp: 10, Speed: 115, Radius: 7, Damage: 5, Sides: 3, Color: '#ffc857', XpValue: 2},
+ {Hp: 50, Speed: 38, Radius: 17, Damage: 14, Sides: 5, Color: '#9b7bff', XpValue: 6},
+ {Hp: 26, Speed: 55, Radius: 12, Damage: 8, Sides: 8, Color: '#ff8fd0', XpValue: 7},
+ {Hp: 650, Speed: 26, Radius: 52, Damage: 30, Sides: 10, Color: '#ff3b3b', XpValue: 40}
+];
+
+const Item = (Name, Glyph, Key, Value, Opts, Desc) => ({Name, Glyph, Key, Value, ...Opts});
+const Items = [
+ Item('Power', '●', 'Damage', 2, {Unit: 'Damage'}),
+ Item('Overclock', '▲', 'FireRate', .15, {Unit: 'Fire Rate'}),
+ Item('Extra bolt', '⬢', 'Projectile', 1, {IsInt: 1, Unit: 'Projectile'}),
+ Item('Scope', '◉', 'Range', 20, {Unit: 'Range'}),
+ Item('Accelerator', '▷', 'ProjectileSpeed', 40, {Unit: 'Bolt Speed'}),
+ Item('Piercer', '◇', 'Piercing', 1, {IsInt: 1, Unit: 'Pierce'}),
+ Item('Precision', '◎', 'CriticalChance', .04, {IsPct: 1, Unit: 'Crit Chance'}),
+ Item('Lethality', '✦', 'CriticalDamage', .20, {IsPct: 1, Unit: 'Crit Damage'}),
+ Item('Hull', '■', 'MaximumHealth', 15, {Unit: 'Maximum Health'}),
+ Item('Repair', '✚', 'Regeneration', .4, {Unit: 'Regeneration'}),
+ Item('Plating', '▣', 'Defense', 1, {IsInt: 1, Unit: 'Defense'}),
+ Item('Evasion', '◌', 'Evasion', .03, {IsPct: 1, Unit: 'Evasion'}),
+ Item('Thrusters', '▶', 'MovementSpeed', 8, {Unit: 'Movement Speed'}),
+ Item('Magnet', '◐', 'PickupRange', 30, {Unit: 'Pickup Range'}),
+ Item('Leech', '◆', 'Lifesteal', .015, {IsPct: 1, Unit: 'Lifesteal'}),
+ Item('Thorns', '▼', 'Thorn', 4, {Unit: 'Thorn Damage'}),
+ Item('Impact', '◀', 'Knockback', 15, {Unit: 'Knockback'}),
+ Item('Blast', '✱', 'BlastRadius', 15, {Unit: 'Blast Radius'}),
+ Item('Scholar', '★', 'ExperienceBonus', .08, {IsPct: 1, Unit: 'Experience'}),
+ Item('Fortune', '♣', 'Luck', .10, {IsPct: 1, Unit: 'Luck'}),
+ Item('Potency', '⚡', 'ElementPower', .10, {IsPct: 1, Unit: 'Element Power'}),
+ Item('Lingering', '⌛', 'StatusDuration', .15, {IsPct: 1, Unit: 'Status Duration'}),
+ Item('Bulk', '⬤', 'ProjectileSize', .10, {IsPct: 1, Unit: 'Bolt Size'})
+];
+
+const StatCaps = {Projectile: 10, Evasion: .6, CriticalChance: .8, Piercing: 8, Lifesteal: .2, BlastRadius: 150, Range: 520, FireRate: 8, Defense: 40};
+const TierMult = [1, 1.5, 2, 2.5, 4, 5], IntTier = [1, 1, 2, 2, 3, 4];
+const RarityNames = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythical'];
+const RarityColors = ['#FFFFFF', '#1EFF00', '#0070DD', '#A335EE', '#FF8000', '#1FDBDE'];
+const Percent = V => Math.round(V * 100) + '%';
+
+const StatList = [
+ ['Damage', 'Damage', V => Round2(V)],
+ ['FireRate', 'Fire Rate', V => Round2(V) + '/s'],
+ ['Projectile', 'Projectile', V => V],
+ ['Range', 'Range', V => V],
+ ['ProjectileSpeed', 'Projectile Speed', V => V],
+ ['Piercing', 'Piercing', V => V],
+ ['CriticalChance', 'Critical Chance', Percent],
+ ['CriticalDamage', 'Critical Damage', V => Percent(2 + V)],
+ ['MaximumHealth', 'Maximum Health', V => V],
+ ['Regeneration', 'Regeneration', V => Round2(V) + '/s'],
+ ['Defense', 'Defense', V => V],
+ ['Evasion', 'Evasion', Percent],
+ ['MovementSpeed', 'Movement Speed', V => V],
+ ['PickupRange', 'Pickup Range', V => V],
+ ['Lifesteal', 'Lifesteal', V => Round2(V * 100) + '%'],
+ ['Thorn', 'Thorn', V => V],
+ ['Knockback', 'Knockback', V => V],
+ ['BlastRadius', 'Blast Radius', V => V],
+ ['ExperienceBonus', 'Experience Bonus', Percent],
+ ['Luck', 'Luck', Percent],
+ ['ElementPower', 'Element Power', Percent],
+ ['StatusDuration', 'Status Duration', Percent],
+ ['ProjectileSize', 'Bolt Size', Percent]
+];
+
+function ItemValue(It, Tier){return It.IsInt ? IntTier[Tier] * It.Value : Round2(It.Value * TierMult[Tier])}
+function ItemText(It, Tier){const V = ItemValue(It, Tier); return '+' + (It.IsPct ? Round2(V * 100) + '%' : Round2(V)) + ' ' + It.Unit}
+
+function RollTier(){
+ const Power = Player.Level + Round * 2, L = Stats.Luck, R = Math.random();
+ if(Power >= 22 && R < .01 + L * .03) return 5;
+ if(Power >= 16 && R < .03 + L * .06) return 4;
+ if(Power >= 10 && R < .08 + L * .10) return 3;
+ if(Power >= 5 && R < .20 + L * .15) return 2;
+ return R < .40 + L * .20 ? 1 : 0;
+}
+
+/* 5 slots: always at least one element card (if any are below max level) */
+function RollOffers(){
+ const Open = ElemNames.filter(N => Elem[N] < 5), Offers5 = [];
+ if(Open.length) Offers5.push({Kind: 'Elem', Name: Open[Math.floor(Math.random() * Open.length)]});
+ const Pool = Shuffle([...Items.map(It => ({Kind: 'Item', Item: It})), ...Open.map(N => ({Kind: 'Elem', Name: N}))]);
+ for(const P of Pool){
+  if(Offers5.length >= 5) break;
+  if(P.Kind === 'Elem' && Offers5.some(O => O.Name === P.Name)) continue;
+  Offers5.push(P);
+ }
+ for(const O of Offers5) if(O.Kind === 'Item') O.Tier = RollTier();
+ return Shuffle(Offers5);
+}
+
+function ApplyOffer(Offer){
+ if(Offer.Kind === 'Elem'){Elem[Offer.Name]++; return}
+ const It = Offer.Item, V = ItemValue(It, Offer.Tier);
+ Stats[It.Key] = Math.min(StatCaps[It.Key] ?? 1e9, Stats[It.Key] + V);
+ if(It.Key === 'MaximumHealth') Player.Hp += V;
+}
+
+/* ---------- state ---------- */
+let Mode = 'menu', SelMode = 'Standard', SelElem = 'Fire', ModeKey = 'Standard';
+let Round = 1, Rounds = 0, RoundTime = 0, Diff = 1, SpawnTimer = 0, Time = 0, Offers = [], Pending = 0, Rerolls = 3, Shots = 0, LastElem = 'Fire';
+let Shake = 0, DyingTime = 0, HpView = 0, Aim = 0, AutoAim = false, Obj = null, ObjKills = 0;
+let Player, Stats, Elem, RunStats, Enemies = [], Bolts = [], EnemyBolts = [], Pickups = [], Crystals = [], Zone = null;
+let Particles = [], Texts = [], ActiveBanner = null, Camera = {X: Arena / 2, Y: Arena / 2};
+const Dots = Array.from({length: 220}, () => ({X: RandRange(0, Arena), Y: RandRange(0, Arena), Size: RandRange(1, 2.5), Phase: RandRange(0, Tau)}));
+let InputMode = matchMedia('(pointer:coarse)').matches ? 'touch' : 'key';
+
+const XpNeeded = L => Math.round(18 + L * 10 + L * L * 1.6);
+
+function NewRun(){
+ Stats = {
+  Damage: 10,
+  FireRate: 1.4,
+  Projectile: 1,
+  Range: 260,
+  ProjectileSpeed: 380,
+  Piercing: 0,
+  CriticalChance: .05,
+  CriticalDamage: 0,
+  MaximumHealth: 100,
+  Regeneration: .5,
+  Defense: 0,
+  Evasion: 0,
+  MovementSpeed: 130,
+  PickupRange: 60,
+  Lifesteal: 0,
+  Thorn: 0,
+  Knockback: 20,
+  BlastRadius: 0,
+  ExperienceBonus: 0,
+  Luck: 0,
+  ElementPower: 0,
+  StatusDuration: 0,
+  ProjectileSize: 0
+ };
+
+ Elem = {Fire: 0, Water: 0, Earth: 0, Wind: 0};
+ Elem[SelElem] = 1;
+ LastElem = SelElem;
+
+ ModeKey = SelMode;
+ const Cfg = Modes[ModeKey];
+ Rounds = Cfg.Total ? Cfg.Total / Cfg.RoundLen : 0;
+
+ Player = {X: Arena / 2, Y: Arena / 2, Hp: Stats.MaximumHealth, Inv: 0, Cooldown: 0, KnockX: 0, KnockY: 0, Xp: 0, Level: 1, Recoil: 0};
+ RunStats = {Kills: 0, Damage: 0, Time: 0};
+ HpView = Player.Hp; Camera.X = Player.X; Camera.Y = Player.Y;
+ Enemies = []; Bolts = []; EnemyBolts = []; Pickups = []; Crystals = []; Zone = null; Particles = []; Texts = [];
+ Round = 1; Pending = 0; Rerolls = 3; Shots = 0; Time = 0;
+ Mode = 'play'; Ui.className = '';
+ StartRound();
+}
+
+/* ---------- rounds & objectives ---------- */
+const ObjOrder = ['slay', 'gather', 'elite', 'zone'];
+
+function StartRound(){
+ const Cfg = Modes[ModeKey];
+ RoundTime = Cfg.RoundLen; Diff = 1 + (Round - 1) * Cfg.Step; SpawnTimer = .5; ObjKills = 0;
+ Enemies = Enemies.filter(En => !En.Elite); Crystals = []; Zone = null;
+ const Type = ObjOrder[(Round - 1) % 4];
+ Obj = {Type, Have: 0, Need: 1, Done: false};
+
+ if(Type === 'slay') Obj.Need = Math.round(22 + Round * 7);
+ if(Type === 'gather'){
+  Obj.Need = 5;
+  for(let I = 0; I < 5; I++) Crystals.push({X: RandRange(150, Arena - 150), Y: RandRange(150, Arena - 150), Phase: RandRange(0, Tau)});
+ }
+ if(Type === 'elite') SpawnEnemy(4, true);
+ if(Type === 'zone'){
+  Obj.Need = 22 + Round * 2;
+  const A = RandRange(0, Tau);
+  Zone = {X: Clamp(Player.X + Math.cos(A) * 450, 200, Arena - 200), Y: Clamp(Player.Y + Math.sin(A) * 450, 200, Arena - 200), R: 140};
+ }
+
+ const Boss = Round % 5 === 0;
+ if(Boss) SpawnEnemy(4, false);
+ ShowBanner('Round ' + Round, Boss ? 'Boss incoming' : ObjectiveName(), '#4ff0d6');
+}
+
+function ObjectiveName(){
+ return {slay: 'Slay enemies', gather: 'Collect the crystals', elite: 'Defeat the elite', zone: 'Hold the zone'}[Obj.Type];
+}
+
+function ObjectiveText(){
+ const T = Obj.Type, Prog = T === 'zone' ? Math.floor(Obj.Have) + '/' + Obj.Need + 's' : Math.floor(Obj.Have) + '/' + Obj.Need;
+ return Obj.Done ? ObjectiveName() + ' ✔' : ObjectiveName() + ' ' + Prog;
+}
+
+function ObjectiveTick(Dt){
+ if(Obj.Done) return;
+ if(Obj.Type === 'slay') Obj.Have = ObjKills;
+ if(Obj.Type === 'gather'){
+  for(const C of Crystals) if(!C.Got && Math.hypot(C.X - Player.X, C.Y - Player.Y) < PlayerRadius + 14){C.Got = true; Obj.Have++; Burst(C.X, C.Y, '#4ff0d6', 14, 160, .5); Ring(C.X, C.Y, '#4ff0d6', 50, .4)}
+ }
+ if(Obj.Type === 'zone' && Math.hypot(Zone.X - Player.X, Zone.Y - Player.Y) < Zone.R) Obj.Have += Dt;
+ if(Obj.Have >= Obj.Need){
+  Obj.Done = true; Pending++; Crystals = []; Zone = null;
+  Player.Hp = Math.min(Stats.MaximumHealth, Player.Hp + Stats.MaximumHealth * .25);
+  ShowBanner('Objective complete', 'Bonus upgrade', '#ffc857');
+  Ring(Player.X, Player.Y, '#ffc857', 90, .6);
+ }
+}
+
+function EndRound(){
+ if(!Obj.Done){
+  const Loss = Stats.MaximumHealth * .25;
+  Player.Hp = Math.max(1, Player.Hp - Loss);
+  ShowBanner('Objective failed', '-25% health', '#ff5d73'); Shake = Math.max(Shake, 8);
+ }
+ if(Rounds && Round >= Rounds){GameOver(true); return}
+ Round++; StartRound();
+}
+
+/* ---------- enemies ---------- */
+function PickType(){
+ const R = Math.random();
+ if(Diff >= 1.7 && R < .15) return 3;
+ if(Diff >= 1.4 && R < .40) return 2;
+ if(Diff >= 1.2 && R < .75) return 1;
+ return 0;
+}
+
+function SpawnEnemy(Kind, Elite){
+ const Type = EnemyTypes[Kind];
+ let X = 0, Y = 0;
+ for(let Try = 0; Try < 8; Try++){
+  const A = RandRange(0, Tau), D = RandRange(520, 680);
+  X = Clamp(Player.X + Math.cos(A) * D, 20, Arena - 20); Y = Clamp(Player.Y + Math.sin(A) * D, 20, Arena - 20);
+  if(Math.hypot(X - Player.X, Y - Player.Y) > 380) break;
+ }
+ const HpMul = Elite ? .45 : 1, Size = Elite ? .75 : 1, Spawn = Kind === 4 ? 1.2 : .6;
+ Enemies.push({
+  Kind, X, Y, Elite: !!Elite,
+  Hp: Type.Hp * Diff * HpMul, MaxHp: Type.Hp * Diff * HpMul,
+  Speed: Type.Speed * (1 + Math.min(.4, (Diff - 1) * .08)),
+  Radius: Type.Radius * Size, Damage: Type.Damage * (1 + (Diff - 1) * .5),
+  Sides: Type.Sides, Color: Elite ? '#ffc857' : Type.Color,
+  Flash: 0, Cooldown: RandRange(1, 3), Rot: 0, SpawnLeft: Spawn, SpawnTotal: Spawn,
+  KnockX: 0, KnockY: 0, SlowT: 0, SlowPct: 0, StunT: 0, Burn: null, BurnTick: 0, Dead: false
+ });
+}
+
+function EnemyShot(En, Angle){EnemyBolts.push({X: En.X, Y: En.Y, Vx: Math.cos(Angle) * 150, Vy: Math.sin(Angle) * 150, Damage: En.Damage * .8, Life: 5})}
+
+/* ---------- effects ---------- */
+function Burst(X, Y, Color, Count, Speed, Life){
+ for(let I = 0; I < Count && Particles.length < 350; I++){
+  const Angle = RandRange(0, Tau), V = RandRange(.3, 1) * Speed;
+  Particles.push({X, Y, Vx: Math.cos(Angle) * V, Vy: Math.sin(Angle) * V, Life: Life || .5, MaxLife: Life || .5, Color, Size: RandRange(1.5, 3.5)});
+ }
+}
+function Ring(X, Y, Color, Size, Life){Particles.push({X, Y, Vx: 0, Vy: 0, Life: Life || .4, MaxLife: Life || .4, Color, Size, Ring: true})}
+function FloatText(X, Y, Text, Color){if(Texts.length < 30) Texts.push({X: X + RandRange(-8, 8), Y, Text, Color, Life: .7})}
+function ShowBanner(Text, Sub, Color){ActiveBanner = {Text, Sub, Color, T: 0, Max: 2}}
+
+function UpdateFx(Dt){
+ Shake *= Math.pow(.005, Dt);
+ for(const Pt of Particles){Pt.Life -= Dt; Pt.X += Pt.Vx * Dt; Pt.Y += Pt.Vy * Dt; Pt.Vx *= 1 - 4 * Dt; Pt.Vy *= 1 - 4 * Dt}
+ Particles = Particles.filter(Pt => Pt.Life > 0);
+ for(const Tx of Texts){Tx.Life -= Dt; Tx.Y -= 40 * Dt}
+ Texts = Texts.filter(Tx => Tx.Life > 0);
+ if(ActiveBanner){ActiveBanner.T += Dt; if(ActiveBanner.T > ActiveBanner.Max) ActiveBanner = null}
+ if(Player){
+  Camera.X += (Player.X - Camera.X) * Math.min(1, Dt * 9); Camera.Y += (Player.Y - Camera.Y) * Math.min(1, Dt * 9);
+  HpView += (Player.Hp - HpView) * Math.min(1, Dt * 8);
+ }
+ if(Mode === 'dying'){DyingTime -= Dt; if(DyingTime <= 0) GameOver(false)}
+}
+
+/* ---------- combat ---------- */
+const EffDamage = () => Stats.Damage * (1 + .08 * Elem.Fire);
+const EffFireRate = () => Stats.FireRate * (1 + .06 * Elem.Water);
+const EffDefense = () => Stats.Defense + 1.5 * Elem.Earth;
+const EffSpeed = () => Stats.MovementSpeed * (1 + .04 * Elem.Wind);
+
+function DamageEnemy(En, Amount, IsCrit, Vx, Vy, Color, Knock){
+ if(En.Dead) return;
+ En.Hp -= Amount; En.Flash = .1; RunStats.Damage += Amount;
+ FloatText(En.X, En.Y - En.Radius, Math.round(Amount), IsCrit ? '#ffc857' : (Color || '#ffffff'));
+ Burst(En.X, En.Y, En.Color, 3, 90, .35);
+ if(Vx !== undefined && Knock){
+  const Len = Math.hypot(Vx, Vy) || 1, Force = Knock * (En.Kind === 4 ? .15 : 1) * 10 / (En.Radius + 6);
+  En.KnockX += Vx / Len * Force * 10; En.KnockY += Vy / Len * Force * 10;
+ }
+ if(En.Hp <= 0){En.Dead = true; KillEnemy(En)}
+}
+
+function ApplyElement(En, Bt){
+ const P = 1 + Stats.ElementPower, D = 1 + Stats.StatusDuration, L = Bt.Lv;
+ if(Bt.Elem === 'Fire'){En.Burn = {T: 3 * D, Dps: Bt.Damage * (.25 + .08 * L) * P}}
+ if(Bt.Elem === 'Water'){En.SlowT = 2 * D; En.SlowPct = Math.min(.7, (.2 + .07 * L) * P)}
+ if(Bt.Elem === 'Earth' && Math.random() < (.06 + .04 * L) * P){En.StunT = .7 * D; Ring(En.X, En.Y, Elems.Earth.Color, En.Radius * 2, .3)}
+}
+
+function KillEnemy(En){
+ const Type = EnemyTypes[En.Kind], Xp = Type.XpValue * (En.Elite ? 3 : 1) * (1 + (Diff - 1) * .25) * (1 + Stats.ExperienceBonus);
+ const Pieces = En.Kind === 4 ? 8 : 1;
+ for(let I = 0; I < Pieces; I++){
+  if(Pickups.length > 200){GainXp(Xp / Pieces); continue}
+  const Angle = RandRange(0, Tau);
+  Pickups.push({X: En.X, Y: En.Y, Vx: Math.cos(Angle) * 90, Vy: Math.sin(Angle) * 90, Value: Xp / Pieces, Phase: RandRange(0, Tau)});
+ }
+ Burst(En.X, En.Y, En.Color, En.Kind === 4 ? 40 : 12, En.Kind === 4 ? 260 : 170, .6); Ring(En.X, En.Y, En.Color, En.Radius * 2.4, .35);
+ Shake = Math.max(Shake, En.Kind === 4 ? 12 : 2);
+ RunStats.Kills++; ObjKills++;
+ if(En.Elite && Obj && Obj.Type === 'elite' && !Obj.Done) Obj.Have = 1;
+}
+
+function GainXp(V){
+ Player.Xp += V;
+ while(Player.Xp >= XpNeeded(Player.Level)){
+  Player.Xp -= XpNeeded(Player.Level); Player.Level++; Pending++;
+  FloatText(Player.X, Player.Y - 34, 'LEVEL UP', '#ffc857'); Ring(Player.X, Player.Y, '#ffc857', 60, .6);
+ }
+}
+
+function HurtPlayer(Amount, Source){
+ if(Player.Inv > 0 || Mode !== 'play') return false;
+ if(Math.random() < Stats.Evasion){FloatText(Player.X, Player.Y - 22, 'dodge', '#4ff0d6'); Player.Inv = .25; return false}
+ const Def = EffDefense(), Taken = Math.max(1, Amount * (1 - Def / (Def + 25)));
+ Player.Hp -= Taken; Player.Inv = .5; Shake = Math.max(Shake, 6);
+ FloatText(Player.X, Player.Y - 22, '-' + Math.round(Taken), '#ff5d73'); Burst(Player.X, Player.Y, '#ff5d73', 8, 150, .4);
+ if(Source){
+  const Dx = Player.X - Source.X, Dy = Player.Y - Source.Y, Len = Math.hypot(Dx, Dy) || 1;
+  Player.KnockX = Dx / Len * 230; Player.KnockY = Dy / Len * 230;
+  if(Stats.Thorn) DamageEnemy(Source, Stats.Thorn);
+ }
+ if(Player.Hp <= 0) PlayerDie();
+ return true;
+}
+
+function PlayerDie(){
+ Mode = 'dying'; DyingTime = 1; Player.Hp = 0; Shake = 16;
+ Burst(Player.X, Player.Y, '#4ff0d6', 50, 300, .9); Ring(Player.X, Player.Y, '#4ff0d6', 90, .6); Enemies = [];
+}
+
+function Volley(Target){
+ const Owned = ElemNames.filter(N => Elem[N] > 0), Count = Stats.Projectile;
+ for(let I = 0; I < Count; I++){
+  const Name = Owned[(Shots + I) % Owned.length], Lv = Elem[Name], Crit = Math.random() < Stats.CriticalChance;
+  const Angle = Aim + (I - (Count - 1) / 2) * .18;
+  const Speed = Stats.ProjectileSpeed * (Name === 'Wind' ? 1.3 : Name === 'Earth' ? .8 : 1);
+  const Dmg = EffDamage() * (Name === 'Earth' ? 1.25 : 1) * (Crit ? 2 + Stats.CriticalDamage : 1);
+  Bolts.push({
+   X: Player.X, Y: Player.Y, Vx: Math.cos(Angle) * Speed, Vy: Math.sin(Angle) * Speed, Damage: Dmg, Elem: Name, Lv, Crit,
+   Life: (Stats.Range + 40) / Speed, Pierce: Stats.Piercing + (Name === 'Wind' ? Math.floor((Lv + 1) / 2) : 0), Hit: [],
+   Size: (Name === 'Earth' ? 6 : Name === 'Wind' ? 3 : 4) * (1 + Stats.ProjectileSize),
+   Knock: Stats.Knockback + (Name === 'Earth' ? 30 * Lv : 0)
+  });
+  LastElem = Name;
+ }
+ Shots += Count; Player.Cooldown = 1 / EffFireRate(); Player.Recoil = 1;
+ Burst(Player.X + Math.cos(Aim) * 20, Player.Y + Math.sin(Aim) * 20, Elems[LastElem].Color, 3, 120, .15);
+}
+
+/* ---------- screens ---------- */
+function CardHtml(Offer, Index, Animate){
+ let Color, Label, Glyph, Name, Text;
+ if(Offer.Kind === 'Elem'){
+  const E = Elems[Offer.Name], Lv = Elem[Offer.Name];
+  Color = E.Color; Glyph = E.Glyph; Name = Offer.Name;
+  Label = Lv ? 'Element · Lv ' + Lv + ' → ' + (Lv + 1) : 'Element · Unlock';
+  Text = E.Desc;
+ }else{
+  Color = RarityColors[Offer.Tier]; Label = RarityNames[Offer.Tier]; Glyph = Offer.Item.Glyph; Name = Offer.Item.Name; Text = ItemText(Offer.Item, Offer.Tier);
+ }
+ return `<button class="Card ${Animate ? 'In' : ''}" style="--Index:${Index};border-color:${Color};box-shadow:0 0 16px ${Color}44" data-pick="${Index}"><div class="Glyph" style="color:${Color}">${Glyph}</div><em style="color:${Color}">${Label}</em><b>${Name}</b><span>${Text}</span></button>`;
+}
+
+function StatsHtml(){
+ const ElemLine = ElemNames.map(N => `<div style="color:${Elems[N].Color}">${Elems[N].Glyph} ${N}<b>Lv ${Elem[N]}</b></div>`).join('');
+ return `<details><summary>Stats · Level ${Player.Level} · HP ${Math.ceil(Player.Hp)}/${Stats.MaximumHealth}</summary><div class="StatGrid">${ElemLine}${StatList.map(S => `<div>${S[1]}<b>${S[2](Stats[S[0]])}</b></div>`).join('')}</div></details>`;
+}
+
+function OpenLevel(){
+ Mode = 'level'; Joys.Move = null; Joys.Aim = null; Offers = RollOffers(); RenderLevel(true);
+}
+
+function RenderLevel(Animate){
+ Ui.className = 'On';
+ Ui.innerHTML = `<div class="Box Wide"><h2>Level ${Player.Level - Pending + 1}</h2><p>Choose 1 of 5 upgrades${Pending > 1 ? ' (' + Pending + ' pending)' : ''}.</p>
+ <div class="Cards">${Offers.map((O, I) => CardHtml(O, I, Animate)).join('')}</div>
+ <div class="Row"><button class="Btn Alt" data-act="reroll" ${Rerolls <= 0 ? 'disabled' : ''}>Reroll (${Rerolls}/3 left)</button></div>${StatsHtml()}</div>`;
+}
+
+function Pause(){
+ if(Mode === 'play'){
+  Mode = 'pause'; Joys.Move = null; Joys.Aim = null; Ui.className = 'On';
+  Ui.innerHTML = `<div class="Box"><h2>Paused</h2><p>Round ${Round} · ${ObjectiveText()}</p><div class="Row"><button class="Btn" data-act="resume">Resume</button><button class="Btn Alt" data-act="menu">Quit to menu</button></div>${StatsHtml()}</div>`;
+ }else if(Mode === 'pause'){Mode = 'play'; Ui.className = ''}
+}
+
+Ui.addEventListener('click', Ev => {
+ const Button = Ev.target.closest('button'); if(!Button) return;
+ const Data = Button.dataset;
+ if(Data.pick !== undefined && Mode === 'level'){
+  ApplyOffer(Offers[+Data.pick]); Pending--;
+  if(Pending > 0){Offers = RollOffers(); RenderLevel(true)}
+  else{Mode = 'play'; Ui.className = ''}
+ }else if(Data.act === 'reroll' && Rerolls > 0){Rerolls--; Offers = RollOffers(); RenderLevel(true)}
+ else if(Data.mode){SelMode = Data.mode; ShowMenu()}
+ else if(Data.elem){SelElem = Data.elem; ShowMenu()}
+ else if(Data.act === 'resume') Pause();
+ else if(Data.act === 'menu'){Mode = 'menu'; Player = null; ShowMenu()}
+ else if(Data.act === 'play'){
+  if(InputMode === 'touch'){
+   try{document.documentElement.requestFullscreen().then(() => screen.orientation.lock('landscape')).catch(() => {})}catch(Err){}
+  }
+  NewRun();
+ }
+});
+
+const FormatTime = S => Math.floor(S / 60) + ':' + String(Math.floor(S % 60)).padStart(2, '0');
+
+function GameOver(Won){
+ Mode = 'over';
+ const Key = ModeKey, Score = Math.floor(RunStats.Time);
+ if(Won || Score > (Best[Key] || 0)){if(Score > (Best[Key] || 0)){Best[Key] = Score; StorageSet('ShapeSwarmBest2', JSON.stringify(Best))}}
+ Ui.className = 'On';
+ Ui.innerHTML = `<div class="Box"><h1>${Won ? 'Victory' : 'Defeated'}</h1><p>${ModeKey} · best time ${FormatTime(Best[Key] || 0)}</p>
+ <div class="Summary"><div>Round<b>${Round}</b></div><div>Level<b>${Player.Level}</b></div><div>Kills<b>${RunStats.Kills}</b></div><div>Damage<b>${Math.round(RunStats.Damage)}</b></div><div>Time<b>${FormatTime(RunStats.Time)}</b></div><div>Element<b>${SelElem}</b></div></div>
+ <div class="Row"><button class="Btn" data-act="play">Play again</button><button class="Btn Alt" data-act="menu">Menu</button></div></div>`;
+}
+
+function ShowMenu(){
+ Ui.className = 'On';
+ const ModeChips = Object.keys(Modes).map(K => `<button class="Chip ${K === SelMode ? 'Sel' : ''}" data-mode="${K}">${K}<small>${Modes[K].Info}${Best[K] ? ' · best ' + FormatTime(Best[K]) : ''}</small></button>`).join('');
+ const ElemChips = ElemNames.map(N => `<button class="Chip ${N === SelElem ? 'Sel' : ''}" style="--Chip:${Elems[N].Color}" data-elem="${N}"><span style="color:${Elems[N].Color}">${Elems[N].Glyph}</span> ${N}<small>${Elems[N].Desc.split('.')[0]}</small></button>`).join('');
+ Ui.innerHTML = `<div class="Box"><h1>Shape Swarm</h1><p>Master Fire, Water, Earth and Wind. Every round has an objective: complete it for a bonus upgrade, fail it and lose health.</p>
+ <h3>Mode</h3><div class="Chips">${ModeChips}</div><h3>Starting element</h3><div class="Chips">${ElemChips}</div>
+ <p style="margin-top:14px">PC: WASD to move, mouse to aim, Q toggles auto-aim, P pauses.<br>Phone (landscape): left stick moves, right stick aims, button toggles auto-aim.<br>Your core fires automatically.</p>
+ <button class="Btn" data-act="play">Play</button></div>`;
+}
+
+/* ---------- input ---------- */
+const Joys = {Move: null, Aim: null}, Keys = {};
+let MouseX = 0, MouseY = 0;
+const AimBtn = () => ({X: Width - 138, Y: SafeTop + 48, W: 122, H: 32});
+
+function JoyMove(J, Ev){
+ let Dx = Ev.clientX - J.Ox, Dy = Ev.clientY - J.Oy;
+ const L = Math.hypot(Dx, Dy);
+ if(L > JoyRadius){Dx = Dx / L * JoyRadius; Dy = Dy / L * JoyRadius}
+ J.Dx = Dx; J.Dy = Dy;
+}
+
+Canvas.addEventListener('pointerdown', Ev => {
+ if(Ev.pointerType !== 'mouse') InputMode = 'touch';
+ if(Mode !== 'play') return;
+ const B = AimBtn();
+ if(Ev.clientX >= B.X && Ev.clientX <= B.X + B.W && Ev.clientY >= B.Y && Ev.clientY <= B.Y + B.H){AutoAim = !AutoAim; return}
+ if(InputMode !== 'touch') return;
+ const Side = Ev.clientX < Width / 2 ? 'Move' : 'Aim';
+ if(Joys[Side]) return;
+ Joys[Side] = {Id: Ev.pointerId, Ox: Ev.clientX, Oy: Ev.clientY, Dx: 0, Dy: 0};
+ try{Canvas.setPointerCapture(Ev.pointerId)}catch(Err){}
+});
+
+Canvas.addEventListener('pointermove', Ev => {
+ if(Ev.pointerType === 'mouse'){InputMode = 'key'; Joys.Move = null; Joys.Aim = null; MouseX = Ev.clientX; MouseY = Ev.clientY; return}
+ for(const K of ['Move', 'Aim']) if(Joys[K] && Joys[K].Id === Ev.pointerId) JoyMove(Joys[K], Ev);
+});
+
+const PointerUp = Ev => {for(const K of ['Move', 'Aim']) if(Joys[K] && Joys[K].Id === Ev.pointerId) Joys[K] = null};
+Canvas.addEventListener('pointerup', PointerUp);
+Canvas.addEventListener('pointercancel', PointerUp);
+Canvas.addEventListener('contextmenu', Ev => Ev.preventDefault());
+
+addEventListener('keydown', Ev => {
+ const Key = Ev.key.toLowerCase();
+ if(('wasd'.includes(Key) && Key.length === 1) || Key.startsWith('arrow')){InputMode = 'key'; Keys[Key] = 1; Ev.preventDefault()}
+ else if(Key === 'q' && Mode === 'play') AutoAim = !AutoAim;
+ else if((Key === 'p' || Key === 'escape') && !Ev.repeat) Pause();
+});
+addEventListener('keyup', Ev => {Keys[Ev.key.toLowerCase()] = 0});
+addEventListener('blur', () => {for(const K in Keys) Keys[K] = 0; if(Mode === 'play') Pause()});
+
+/* ---------- update ---------- */
+function Update(Dt){
+ Time += Dt; RunStats.Time += Dt;
+ let Mx = (Keys['d'] || Keys['arrowright'] ? 1 : 0) - (Keys['a'] || Keys['arrowleft'] ? 1 : 0), My = (Keys['s'] || Keys['arrowdown'] ? 1 : 0) - (Keys['w'] || Keys['arrowup'] ? 1 : 0);
+ if(Joys.Move){Mx += Joys.Move.Dx / JoyRadius; My += Joys.Move.Dy / JoyRadius}
+ let Len = Math.hypot(Mx, My); if(Len > 1){Mx /= Len; My /= Len; Len = 1}
+ const Speed = EffSpeed();
+ Player.X = Clamp(Player.X + (Mx * Speed + Player.KnockX) * Dt, PlayerRadius, Arena - PlayerRadius);
+ Player.Y = Clamp(Player.Y + (My * Speed + Player.KnockY) * Dt, PlayerRadius, Arena - PlayerRadius);
+ Player.KnockX *= Math.max(0, 1 - 9 * Dt); Player.KnockY *= Math.max(0, 1 - 9 * Dt);
+ Player.Inv -= Dt; Player.Recoil = Math.max(0, Player.Recoil - Dt * 8);
+ Player.Hp = Math.min(Stats.MaximumHealth, Player.Hp + Stats.Regeneration * Dt);
+ if(Len > .2 && Math.random() < .6 && Particles.length < 350) Particles.push({X: Player.X - Mx * 10, Y: Player.Y - My * 10, Vx: -Mx * 30, Vy: -My * 30, Life: .3, MaxLife: .3, Color: Elems[LastElem].Color, Size: 2});
+
+ /* round flow */
+ RoundTime -= Dt;
+ ObjectiveTick(Dt);
+ if(RoundTime <= 0){EndRound(); if(Mode !== 'play') return}
+ SpawnTimer -= Dt;
+ if(SpawnTimer <= 0 && Enemies.length < 130){
+  const Count = 1 + Math.floor(Diff / 2.5);
+  for(let I = 0; I < Count; I++) SpawnEnemy(PickType());
+  SpawnTimer = Math.max(.25, .9 / (1 + (Diff - 1) * .6));
+ }
+
+ /* aim & fire */
+ Player.Cooldown -= Dt;
+ let Target = null, NearDist = Stats.Range;
+ for(const En of Enemies){
+  if(En.SpawnLeft > 0) continue;
+  const Dist = Math.hypot(En.X - Player.X, En.Y - Player.Y) - En.Radius;
+  if(Dist < NearDist){NearDist = Dist; Target = En}
+ }
+ if(AutoAim){if(Target) Aim = Math.atan2(Target.Y - Player.Y, Target.X - Player.X)}
+ else if(InputMode === 'touch'){const J = Joys.Aim; if(J && Math.hypot(J.Dx, J.Dy) > 10) Aim = Math.atan2(J.Dy, J.Dx)}
+ else Aim = Math.atan2(MouseY - (Height / 2 + (Player.Y - Camera.Y) * Zoom), MouseX - (Width / 2 + (Player.X - Camera.X) * Zoom));
+ if(Player.Cooldown <= 0 && (!AutoAim || Target)) Volley(Target);
+
+ /* enemies */
+ for(const En of Enemies){
+  En.Flash -= Dt; En.Rot += Dt * (En.Kind === 4 ? .6 : 1.2);
+  if(En.SpawnLeft > 0){En.SpawnLeft -= Dt; continue}
+  if(En.Burn){
+   En.Burn.T -= Dt; En.BurnTick -= Dt;
+   if(En.BurnTick <= 0){En.BurnTick = .5; DamageEnemy(En, En.Burn.Dps * .5, false, undefined, undefined, Elems.Fire.Color)}
+   if(En.Burn.T <= 0) En.Burn = null;
+  }
+  En.SlowT -= Dt; En.StunT -= Dt;
+  const Dx = Player.X - En.X, Dy = Player.Y - En.Y, Dist = Math.hypot(Dx, Dy) || 1;
+  let Spd = En.Speed * (En.SlowT > 0 ? 1 - En.SlowPct : 1);
+  if(En.StunT > 0) Spd = 0;
+  if(En.Kind === 3){if(Dist < 170) Spd = -Spd * .7; else if(Dist < 230) Spd = 0}
+  if(En.Kind === 1) En.Rot = Math.atan2(Dy, Dx) + Math.PI / 2;
+  En.X = Clamp(En.X + (Dx / Dist * Spd + En.KnockX) * Dt, 10, Arena - 10); En.Y = Clamp(En.Y + (Dy / Dist * Spd + En.KnockY) * Dt, 10, Arena - 10);
+  En.KnockX *= Math.max(0, 1 - 7 * Dt); En.KnockY *= Math.max(0, 1 - 7 * Dt);
+  if(En.Kind >= 3 && En.StunT <= 0){
+   En.Cooldown -= Dt;
+   if(En.Cooldown <= 0){
+    if(En.Kind === 3) EnemyShot(En, Math.atan2(Dy, Dx));
+    else{for(let I = 0; I < 12; I++) EnemyShot(En, I / 12 * Tau + En.Rot); Ring(En.X, En.Y, En.Color, En.Radius * 2, .4)}
+    En.Cooldown = En.Kind === 4 ? 2.4 : 2.2;
+   }
+  }
+ }
+
+ /* solid collisions: enemy vs enemy, enemy vs player */
+ for(let I = 0; I < Enemies.length; I++){
+  const A = Enemies[I]; if(A.SpawnLeft > 0) continue;
+  for(let J = I + 1; J < Enemies.length; J++){
+   const B = Enemies[J]; if(B.SpawnLeft > 0) continue;
+   const Dx = B.X - A.X, Dy = B.Y - A.Y, Reach = A.Radius + B.Radius;
+   if(Math.abs(Dx) < Reach && Math.abs(Dy) < Reach){
+    const Dist = Math.hypot(Dx, Dy) || 1;
+    if(Dist < Reach){
+     const Over = Reach - Dist, MassA = A.Radius * A.Radius, MassB = B.Radius * B.Radius, WeightA = MassB / (MassA + MassB), WeightB = MassA / (MassA + MassB);
+     A.X -= Dx / Dist * Over * WeightA; A.Y -= Dy / Dist * Over * WeightA; B.X += Dx / Dist * Over * WeightB; B.Y += Dy / Dist * Over * WeightB;
+    }
+   }
+  }
+  const Dx = Player.X - A.X, Dy = Player.Y - A.Y, Dist = Math.hypot(Dx, Dy) || 1, Reach = A.Radius + PlayerRadius;
+  if(Dist < Reach + 2) HurtPlayer(A.Damage, A);
+  if(Dist < Reach && Mode !== 'dying'){
+   const Over = Reach - Dist, MassA = A.Radius * A.Radius, PlayerShare = MassA / (MassA + PlayerRadius * PlayerRadius * 1.5);
+   Player.X = Clamp(Player.X + Dx / Dist * Over * PlayerShare, PlayerRadius, Arena - PlayerRadius);
+   Player.Y = Clamp(Player.Y + Dy / Dist * Over * PlayerShare, PlayerRadius, Arena - PlayerRadius);
+   A.X -= Dx / Dist * Over * (1 - PlayerShare); A.Y -= Dy / Dist * Over * (1 - PlayerShare);
+  }
+ }
+ if(Mode === 'dying') return;
+
+ /* bolts */
+ for(const Bt of Bolts){
+  Bt.X += Bt.Vx * Dt; Bt.Y += Bt.Vy * Dt; Bt.Life -= Dt;
+  for(const En of Enemies){
+   if(En.SpawnLeft > 0 || En.Hp <= 0 || Bt.Hit.includes(En) || Math.hypot(En.X - Bt.X, En.Y - Bt.Y) >= En.Radius + Bt.Size) continue;
+   Bt.Hit.push(En); DamageEnemy(En, Bt.Damage, Bt.Crit, Bt.Vx, Bt.Vy, Elems[Bt.Elem].Color, Bt.Knock);
+   ApplyElement(En, Bt);
+   if(Stats.Lifesteal) Player.Hp = Math.min(Stats.MaximumHealth, Player.Hp + Bt.Damage * Stats.Lifesteal);
+   if(Stats.BlastRadius){
+    Ring(En.X, En.Y, Elems[Bt.Elem].Color, Stats.BlastRadius, .25);
+    for(const Other of Enemies){
+     if(Other !== En && Other.Hp > 0 && Other.SpawnLeft <= 0 && Math.hypot(Other.X - En.X, Other.Y - En.Y) < Stats.BlastRadius + Other.Radius) DamageEnemy(Other, Bt.Damage * .5, false, Other.X - En.X, Other.Y - En.Y, undefined, Stats.Knockback);
+    }
+   }
+   if(Bt.Pierce <= 0){Bt.Life = 0; break}
+   Bt.Pierce--;
+  }
+ }
+ for(const Eb of EnemyBolts){
+  Eb.X += Eb.Vx * Dt; Eb.Y += Eb.Vy * Dt; Eb.Life -= Dt;
+  if(Math.hypot(Eb.X - Player.X, Eb.Y - Player.Y) < PlayerRadius){HurtPlayer(Eb.Damage); Eb.Life = 0}
+ }
+ if(Mode === 'dying') return;
+ Enemies = Enemies.filter(En => En.Hp > 0);
+ Bolts = Bolts.filter(Bt => Bt.Life > 0 && Bt.X > 0 && Bt.X < Arena && Bt.Y > 0 && Bt.Y < Arena);
+ EnemyBolts = EnemyBolts.filter(Eb => Eb.Life > 0);
+
+ /* experience orbs */
+ for(const Pk of Pickups){
+  Pk.X += Pk.Vx * Dt; Pk.Y += Pk.Vy * Dt; Pk.Vx *= 1 - 5 * Dt; Pk.Vy *= 1 - 5 * Dt;
+  const Dx = Player.X - Pk.X, Dy = Player.Y - Pk.Y, Dist = Math.hypot(Dx, Dy) || 1;
+  if(Dist < Stats.PickupRange){Pk.X += Dx / Dist * 340 * Dt; Pk.Y += Dy / Dist * 340 * Dt}
+  if(Dist < PlayerRadius + 4){GainXp(Pk.Value); Pk.Value = 0; Burst(Player.X, Player.Y, '#4ff0d6', 3, 90, .3)}
+ }
+ Pickups = Pickups.filter(Pk => Pk.Value > 0);
+ if(Pending > 0 && Mode === 'play') OpenLevel();
+}
+
+/* ---------- draw ---------- */
+function Poly(X, Y, Radius, Sides, Rot){
+ Context.beginPath();
+ if(!Sides){Context.arc(X, Y, Radius, 0, Tau); return}
+ for(let I = 0; I < Sides; I++){
+  const Angle = Rot + I / Sides * Tau - Math.PI / 2;
+  Context[I ? 'lineTo' : 'moveTo'](X + Math.cos(Angle) * Radius, Y + Math.sin(Angle) * Radius);
+ }
+ Context.closePath();
+}
+
+function Shape(X, Y, Radius, Sides, Rot, Color, Fill){
+ Poly(X, Y, Radius, Sides, Rot); Context.fillStyle = Fill || Color + '44'; Context.fill();
+ Context.strokeStyle = Color; Context.lineWidth = 2; Context.stroke();
+}
+
+function Draw(){
+ Context.setTransform(Dpr, 0, 0, Dpr, 0, 0); Context.fillStyle = '#0d1020'; Context.fillRect(0, 0, Width, Height);
+ if(!Player){
+  Context.strokeStyle = '#1a2146'; Context.lineWidth = 1; Context.beginPath();
+  for(let I = 0; I < Width; I += 40){Context.moveTo(I, 0); Context.lineTo(I, Height)}
+  for(let I = 0; I < Height; I += 40){Context.moveTo(0, I); Context.lineTo(Width, I)}
+  Context.stroke(); return;
+ }
+ const Sx = RandRange(-1, 1) * Shake, Sy = RandRange(-1, 1) * Shake;
+ Context.setTransform(Dpr * Zoom, 0, 0, Dpr * Zoom, Dpr * (Width / 2 - Camera.X * Zoom + Sx), Dpr * (Height / 2 - Camera.Y * Zoom + Sy));
+ Context.fillStyle = '#10152e'; Context.fillRect(0, 0, Arena, Arena);
+
+ /* four element corners, tinted softly */
+ const Half = Arena / 2;
+ ElemNames.forEach((N, I) => {Context.fillStyle = Elems[N].Color + '10'; Context.fillRect((I % 2) * Half, Math.floor(I / 2) * Half, Half, Half)});
+
+ Context.strokeStyle = '#1a2146'; Context.lineWidth = 1; Context.beginPath();
+ for(let I = 0; I <= Arena; I += 50){Context.moveTo(I, 0); Context.lineTo(I, Arena); Context.moveTo(0, I); Context.lineTo(Arena, I)}
+ Context.stroke();
+ for(const Dt of Dots){Context.globalAlpha = .25 + .2 * Math.sin(Time * 1.5 + Dt.Phase); Context.fillStyle = '#4ff0d6'; Context.beginPath(); Context.arc(Dt.X, Dt.Y, Dt.Size, 0, Tau); Context.fill()}
+ Context.globalAlpha = 1; Context.strokeStyle = '#4ff0d6'; Context.lineWidth = 3; Context.strokeRect(0, 0, Arena, Arena);
+
+ if(Zone){
+  Context.globalAlpha = .12 + .05 * Math.sin(Time * 3); Context.fillStyle = '#ffc857'; Poly(Zone.X, Zone.Y, Zone.R, 0); Context.fill();
+  Context.globalAlpha = .8; Context.strokeStyle = '#ffc857'; Context.lineWidth = 3; Context.stroke(); Context.globalAlpha = 1;
+ }
+ for(const C of Crystals){
+  if(C.Got) continue;
+  Context.save(); Context.translate(C.X, C.Y + Math.sin(Time * 3 + C.Phase) * 3);
+  Shape(0, 0, 11, 4, Math.PI / 4, '#4ff0d6', '#4ff0d655'); Context.restore();
+ }
+ for(const Pk of Pickups){
+  const Spin = Math.abs(Math.cos(Time * 5 + Pk.Phase));
+  Context.save(); Context.translate(Pk.X, Pk.Y + Math.sin(Time * 4 + Pk.Phase) * 2); Context.scale(.25 + .75 * Spin, 1);
+  Shape(0, 0, 5, 4, Math.PI / 4, '#4ff0d6', '#4ff0d6'); Context.restore();
+ }
+ for(const En of Enemies){
+  if(En.SpawnLeft > 0){
+   const Progress = 1 - En.SpawnLeft / En.SpawnTotal;
+   Context.globalAlpha = .6; Context.strokeStyle = En.Color; Context.lineWidth = 1.5; Poly(En.X, En.Y, En.Radius * (2.2 - 1.2 * Progress), 0); Context.stroke();
+   Shape(En.X, En.Y, En.Radius * Progress, En.Sides, En.Rot, En.Color); Context.globalAlpha = 1; continue;
+  }
+  const Squash = 1 + Math.max(0, En.Flash) * 2 + (En.Kind === 0 ? Math.sin(Time * 6 + En.X) * .04 : 0);
+  Shape(En.X, En.Y, En.Radius * Squash, En.Sides, En.Rot, En.Color, En.Flash > 0 ? '#ffffff' : null);
+  if(En.Elite){Context.strokeStyle = '#ffc857'; Context.lineWidth = 2; Poly(En.X, En.Y, En.Radius + 7 + Math.sin(Time * 5) * 2, 0); Context.stroke()}
+  if(En.Burn){Context.fillStyle = Elems.Fire.Color; Context.beginPath(); Context.arc(En.X, En.Y - En.Radius - 3, 2.5, 0, Tau); Context.fill()}
+  if(En.SlowT > 0){Context.strokeStyle = Elems.Water.Color; Context.lineWidth = 1.5; Poly(En.X, En.Y, En.Radius + 3, 0); Context.stroke()}
+  if(En.StunT > 0){Context.strokeStyle = Elems.Earth.Color; Context.lineWidth = 2; Poly(En.X, En.Y, En.Radius + 5, 4, Time * 6); Context.stroke()}
+  if(En.Hp < En.MaxHp){
+   Context.fillStyle = '#000a'; Context.fillRect(En.X - En.Radius, En.Y - En.Radius - 9, En.Radius * 2, 3);
+   Context.fillStyle = '#ff5d73'; Context.fillRect(En.X - En.Radius, En.Y - En.Radius - 9, En.Radius * 2 * En.Hp / En.MaxHp, 3);
+  }
+ }
+ for(const Eb of EnemyBolts){
+  Context.globalAlpha = .5; Context.strokeStyle = '#ff8fd0'; Context.lineWidth = 2; Context.beginPath(); Context.moveTo(Eb.X - Eb.Vx * .04, Eb.Y - Eb.Vy * .04); Context.lineTo(Eb.X, Eb.Y); Context.stroke();
+  Context.globalAlpha = 1; Shape(Eb.X, Eb.Y, 4, 0, 0, '#ff8fd0', '#ff8fd0');
+ }
+ for(const Bt of Bolts){
+  const Color = Elems[Bt.Elem].Color;
+  Context.globalAlpha = .5; Context.strokeStyle = Color; Context.lineWidth = Bt.Size; Context.beginPath(); Context.moveTo(Bt.X - Bt.Vx * .03, Bt.Y - Bt.Vy * .03); Context.lineTo(Bt.X, Bt.Y); Context.stroke();
+  Context.globalAlpha = 1; Shape(Bt.X, Bt.Y, Bt.Crit ? Bt.Size + 1 : Bt.Size, 0, 0, Color, Bt.Crit ? '#ffc857' : '#ffffff');
+ }
+ for(const Pt of Particles){
+  const Fade = Pt.Life / Pt.MaxLife; Context.globalAlpha = Fade;
+  if(Pt.Ring){Context.strokeStyle = Pt.Color; Context.lineWidth = 2; Poly(Pt.X, Pt.Y, Pt.Size * (1 - Fade) + 3, 0); Context.stroke()}
+  else{Context.fillStyle = Pt.Color; Context.beginPath(); Context.arc(Pt.X, Pt.Y, Pt.Size * (.4 + .6 * Fade), 0, Tau); Context.fill()}
+ }
+ Context.globalAlpha = 1;
+ if(Mode !== 'dying' && !(Player.Inv > 0 && Math.floor(Player.Inv * 24) % 2)){
+  const Pulse = Math.sin(Time * 5) * .8, Core = Elems[LastElem].Color;
+  if(Mode === 'play'){
+   Context.globalAlpha = .12 + .04 * Math.sin(Time * 3); Context.strokeStyle = Core; Context.lineWidth = 1; Poly(Player.X, Player.Y, Stats.Range, 0); Context.stroke();
+   if(!AutoAim){Context.globalAlpha = .25; Context.setLineDash([6, 8]); Context.beginPath(); Context.moveTo(Player.X, Player.Y); Context.lineTo(Player.X + Math.cos(Aim) * Stats.Range, Player.Y + Math.sin(Aim) * Stats.Range); Context.stroke(); Context.setLineDash([])}
+   Context.globalAlpha = 1;
+  }
+  Shape(Player.X, Player.Y, PlayerRadius + Pulse, 0, 0, Core);
+  Shape(Player.X, Player.Y, 7, 6, Time * 1.5, Core, Core);
+  const BarrelLen = 21 - Player.Recoil * 3;
+  Context.strokeStyle = '#e8ecff'; Context.lineWidth = 3; Context.beginPath();
+  Context.moveTo(Player.X + Math.cos(Aim) * 13, Player.Y + Math.sin(Aim) * 13); Context.lineTo(Player.X + Math.cos(Aim) * BarrelLen, Player.Y + Math.sin(Aim) * BarrelLen); Context.stroke();
+ }
+ Context.font = '700 13px "Chakra Petch",sans-serif'; Context.textAlign = 'center';
+ for(const Tx of Texts){Context.globalAlpha = Math.min(1, Tx.Life * 3); Context.fillStyle = Tx.Color; Context.fillText(Tx.Text, Tx.X, Tx.Y)}
+ Context.globalAlpha = 1;
+ DrawHud();
+}
+
+function ObjectiveTargets(){
+ const T = [];
+ for(const C of Crystals) if(!C.Got) T.push(C);
+ for(const En of Enemies) if(En.Elite) T.push(En);
+ if(Zone) T.push(Zone);
+ return T;
+}
+
+function DrawJoy(J, Hx, Hy, Label){
+ const X = J ? J.Ox : Hx, Y = J ? J.Oy : Hy, Alpha = J ? .9 : .3;
+ Context.globalAlpha = Alpha * .7; Context.fillStyle = '#4ff0d622'; Context.strokeStyle = '#e8ecff'; Context.lineWidth = 2;
+ Context.beginPath(); Context.arc(X, Y, JoyRadius, 0, Tau); Context.fill(); Context.stroke();
+ Context.globalAlpha = Alpha; Context.fillStyle = '#4ff0d6'; Context.beginPath(); Context.arc(X + (J ? J.Dx : 0), Y + (J ? J.Dy : 0), 22, 0, Tau); Context.fill();
+ if(!J){Context.fillStyle = '#e8ecff'; Context.font = '700 12px "Chakra Petch",sans-serif'; Context.textAlign = 'center'; Context.fillText(Label, X, Y + JoyRadius + 16)}
+ Context.globalAlpha = 1;
+}
+
+function DrawHud(){
+ Context.setTransform(Dpr, 0, 0, Dpr, 0, 0);
+ if(Player.Inv > .3){Context.fillStyle = '#ff5d7326'; Context.fillRect(0, 0, Width, Height)}
+ const BarW = Math.min(Width - 300, 320), BarX = (Width - BarW) / 2, BarY = 12 + SafeTop;
+
+ /* health & xp */
+ Context.fillStyle = '#000a'; Context.fillRect(BarX, BarY, BarW, 14);
+ Context.fillStyle = '#ffffff88'; Context.fillRect(BarX, BarY, BarW * Clamp(HpView / Stats.MaximumHealth, 0, 1), 14);
+ Context.fillStyle = Player.Hp / Stats.MaximumHealth < .3 && Math.floor(Time * 6) % 2 ? '#ffffff' : '#ff5d73'; Context.fillRect(BarX, BarY, BarW * Clamp(Player.Hp / Stats.MaximumHealth, 0, 1), 14);
+ Context.fillStyle = '#4ff0d6'; Context.fillRect(BarX, BarY + 16, BarW * Clamp(Player.Xp / XpNeeded(Player.Level), 0, 1), 3);
+ Context.fillStyle = '#e8ecff'; Context.textAlign = 'center'; Context.font = '700 12px "Chakra Petch",sans-serif';
+ Context.fillText(Math.ceil(Player.Hp) + ' / ' + Math.round(Stats.MaximumHealth), Width / 2, BarY + 11);
+
+ /* round, objective, level */
+ Context.textAlign = 'left'; Context.font = '700 17px "Chakra Petch",sans-serif'; Context.fillText('Round ' + Round + (Rounds ? '/' + Rounds : ''), 16, BarY + 14);
+ Context.fillStyle = Obj.Done ? '#1eff00' : '#ffc857'; Context.font = '700 13px "Chakra Petch",sans-serif'; Context.fillText(ObjectiveText(), 16, BarY + 32);
+ Context.fillStyle = '#4ff0d6'; Context.fillText('Lv ' + Player.Level, 16, BarY + 50);
+
+ /* time */
+ const Cfg = Modes[ModeKey];
+ Context.fillStyle = '#e8ecff'; Context.textAlign = 'right'; Context.font = '700 17px "Chakra Petch",sans-serif';
+ Context.fillText(Cfg.Total ? FormatTime(Math.max(0, Cfg.Total - RunStats.Time)) : FormatTime(RunStats.Time), Width - 16, BarY + 14);
+ Context.fillStyle = '#8f98c8'; Context.font = '700 12px "Chakra Petch",sans-serif'; Context.fillText('Round ends ' + FormatTime(Math.max(0, RoundTime)), Width - 16, BarY + 30);
+
+ /* auto-aim button */
+ const B = AimBtn();
+ Context.fillStyle = AutoAim ? '#4ff0d6' : '#151a36'; Context.strokeStyle = '#4ff0d6'; Context.lineWidth = 2;
+ Context.beginPath(); Context.roundRect(B.X, B.Y, B.W, B.H, 8); Context.fill(); Context.stroke();
+ Context.fillStyle = AutoAim ? '#07131a' : '#e8ecff'; Context.textAlign = 'center'; Context.font = '700 13px "Chakra Petch",sans-serif';
+ Context.fillText('Auto-aim: ' + (AutoAim ? 'ON' : 'OFF') + (InputMode === 'key' ? ' (Q)' : ''), B.X + B.W / 2, B.Y + 21);
+
+ /* element levels */
+ ElemNames.forEach((N, I) => {
+  const X = Width / 2 - 100 + I * 52, Y = Height - 26 - SafeBottom;
+  Context.globalAlpha = Elem[N] ? 1 : .3; Context.fillStyle = Elems[N].Color; Context.font = '700 14px "Chakra Petch",sans-serif'; Context.textAlign = 'left';
+  Context.fillText(Elems[N].Glyph + ' ' + Elem[N], X, Y);
+ });
+ Context.globalAlpha = 1;
+
+ /* arrow to nearest objective target */
+ const Targets = ObjectiveTargets();
+ if(Targets.length && Mode === 'play'){
+  let Near = Targets[0], ND = 1e9;
+  for(const T of Targets){const D = Math.hypot(T.X - Player.X, T.Y - Player.Y); if(D < ND){ND = D; Near = T}}
+  if(ND * Zoom > Math.min(Width, Height) * .42){
+   const A = Math.atan2(Near.Y - Player.Y, Near.X - Player.X), R = Math.min(Width, Height) * .38;
+   const Px = Width / 2 + (Player.X - Camera.X) * Zoom + Math.cos(A) * R, Py = Height / 2 + (Player.Y - Camera.Y) * Zoom + Math.sin(A) * R;
+   Context.save(); Context.translate(Px, Py); Context.rotate(A); Context.fillStyle = '#ffc857'; Context.beginPath(); Context.moveTo(12, 0); Context.lineTo(-8, -8); Context.lineTo(-8, 8); Context.closePath(); Context.fill(); Context.restore();
+  }
+ }
+
+ if(ActiveBanner){
+  const Progress = ActiveBanner.T / ActiveBanner.Max, Fade = Math.sin(Math.PI * Math.min(1, Progress)), Scale = .85 + .15 * Math.min(1, Progress * 5);
+  Context.save(); Context.translate(Width / 2, Height * .3); Context.scale(Scale, Scale); Context.globalAlpha = Math.min(1, Fade * 2.5); Context.textAlign = 'center';
+  Context.fillStyle = ActiveBanner.Color; Context.font = '700 44px "Chakra Petch",sans-serif'; Context.fillText(ActiveBanner.Text, 0, 0);
+  if(ActiveBanner.Sub){Context.fillStyle = '#e8ecff'; Context.font = '700 20px "Chakra Petch",sans-serif'; Context.fillText(ActiveBanner.Sub, 0, 30)}
+  Context.restore(); Context.globalAlpha = 1;
+ }
+
+ if(InputMode === 'touch' && Mode === 'play'){
+  DrawJoy(Joys.Move, Width * .17, Height - SafeBottom - 90, 'Move');
+  DrawJoy(Joys.Aim, Width * .83, Height - SafeBottom - 90, 'Aim');
+ }
+}
+
+let LastTime = 0;
+function Loop(Stamp){
+ requestAnimationFrame(Loop);
+ const Dt = Math.min(.05, (Stamp - LastTime) / 1000 || 0); LastTime = Stamp;
+ const Blocked = InputMode === 'touch' && Height > Width;
+ if(Player){
+  UpdateFx(Dt);
+  if(Mode === 'play' && !Blocked) Update(Dt);
+ }
+ Draw();
+}
+ShowMenu(); requestAnimationFrame(Loop);
+</script>
+</body>
+</html>

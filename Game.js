@@ -201,26 +201,44 @@ function ShowMenu(){
 }
 
 /* ---------- input ---------- */
-let Joy=null;const Keys={};
-const JoyX=()=>Width/2,JoyY=()=>Height-SafeBottom-100;
+let Joy=null;
+const Keys={};
+const JoyX=()=>Width/2;
+const JoyY=()=>Height-SafeBottom-100;
+
 function JoySet(Ev){
- let Dx=Ev.clientX-JoyX(),Dy=Ev.clientY-JoyY();const Len=Math.hypot(Dx,Dy);
+ let Dx=Ev.clientX-JoyX(),Dy=Ev.clientY-JoyY();
+ const Len=Math.hypot(Dx,Dy);
  if(Len>JoyRadius){Dx=Dx/Len*JoyRadius;Dy=Dy/Len*JoyRadius}
  Joy.Dx=Dx;Joy.Dy=Dy;
 }
+
 Canvas.addEventListener('pointerdown',Ev=>{
  if(Ev.pointerType!=='mouse')InputMode='touch';
  if(InputMode!=='touch'||Math.abs(Ev.clientX-JoyX())>JoyRadius||Ev.clientY<Height*.5||Joy)return;
- Joy={Id:Ev.pointerId,Dx:0,Dy:0};JoySet(Ev);
+ Joy={Id:Ev.pointerId,Dx:0,Dy:0};
+ JoySet(Ev);
  try{Canvas.setPointerCapture(Ev.pointerId)}catch(Err){}
 });
-Canvas.addEventListener('pointermove',Ev=>{if(Joy&&Joy.Id===Ev.pointerId)JoySet(Ev)});
-const PointerUp=Ev=>{if(Joy&&Joy.Id===Ev.pointerId)Joy=null};
-Canvas.addEventListener('pointerup',PointerUp);Canvas.addEventListener('pointercancel',PointerUp);
+
+Canvas.addEventListener('pointermove',Ev=>{
+ if(Joy&&Joy.Id===Ev.pointerId)JoySet(Ev);
+});
+
+const PointerUp=Ev=>{
+ if(Joy&&Joy.Id===Ev.pointerId)Joy=null;
+};
+
+Canvas.addEventListener('pointerup',PointerUp);
+Canvas.addEventListener('pointercancel',PointerUp);
+
 addEventListener('keydown',Ev=>{
  const Key=Ev.key.toLowerCase();
- if(('wasd'.includes(Key)&&Key.length===1)||Key.startsWith('arrow')){InputMode='key';Joy=null;Keys[Key]=1;Ev.preventDefault()}
+ if(('wasd'.includes(Key)&&Key.length===1)||Key.startsWith('arrow')){
+  InputMode='key';Joy=null;Keys[Key]=1;Ev.preventDefault();
+ }
 });
+
 addEventListener('keyup',Ev=>{Keys[Ev.key.toLowerCase()]=0});
 
 /* ---------- update ---------- */

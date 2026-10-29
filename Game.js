@@ -25,12 +25,13 @@ let BestWave =+ StorageGet('ShapeSwarmBest') || 0;
 
 /* ---------- data ---------- */
 const EnemyTypes = [
- {Hp: 10, Speed: 50, Radius: 10, Damage: 10, Sides: 0, Color: '#ff5d73', CoinValue: 1, XpValue: 1},
- {Hp: 5, Speed: 100, Radius: 5, Damage: 10, Sides: 3, Color: '#ffc857', CoinValue: 1, XpValue: 1},
- {Hp: 20, Speed: 30, Radius: 15, Damage: 5, Sides: 5, Color: '#9b7bff', CoinValue: 3, XpValue: 3},
- {Hp: 10, Speed: 50, Radius: 10, Damage: 10, Sides: 8, Color: '#ff8fd0', CoinValue: 2, XpValue: 2},
- {Hp: 500, Speed: 20, Radius: 50, Damage: 20, Sides: 10, Color: '#ff3b3b', CoinValue: 30, XpValue: 40}
+ {Hp: 10, Speed: 50, Radius: 10, Damage: 5.00, Sides: 0, Color: '#ff5d73', CoinValue: 1.50, XpValue: 5.00},
+ {Hp: 5, Speed: 100, Radius: 5, Damage: 2.50, Sides: 3, Color: '#ffc857', CoinValue: 1.00, XpValue: 2.50},
+ {Hp: 20, Speed: 30, Radius: 15, Damage: 7.50, Sides: 5, Color: '#9b7bff', CoinValue: 5.00, XpValue: 7.50},
+ {Hp: 10, Speed: 50, Radius: 10, Damage: 10.00, Sides: 8, Color: '#ff8fd0', CoinValue: 2.50, XpValue: 10.00},
+ {Hp: 500, Speed: 20, Radius: 50, Damage: 50.00, Sides: 10, Color: '#ff3b3b', CoinValue: 50.00, XpValue: 50.00}
 ];
+
 const Item = (Name, Glyph, Key, Value, Cost, Opts) => ({Name, Glyph, Key, Value, Cost, ...Opts});
 const Items = [
  Item('Power', '●', 'Damage', 5, 20, {Unit: 'Damage'}),
@@ -56,7 +57,7 @@ const Items = [
  Item('Fortune', '♣', 'Luck', 0.125, 20, {IsPct: 1, Unit: 'Luck'})
 ];
 
-const StatCaps = {Bolts: 100, Dodge: 0.75, CritChance: 0.90, Pierce: 10, Leech: 0.90, BlastRadius: 750, Range: 500};
+const StatCaps = {Bolts: 100, Dodge: 0.75, CritChance: 0.90, Pierce: 10, Leech: 0.90, BlastRadius: 500, Range: 750};
 const TierMult = [1.00, 1.50, 2.00, 2.50, 4.00, 5.00], CostMult = [1.00, 1.75, 2.35, 3.25, 4.35, 5.50];
 const RarityNames = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythical'], RarityColors = ['#FFFFFF', '#1EFF00', '#0070DD', '#A335EE', '#FF8000', '#1FDBDE'];
 const Percent = V => Math.round(V * 100) + '%';
@@ -102,12 +103,36 @@ const Dots=Array.from({length:70},()=>({X:RandRange(0,Arena),Y:RandRange(0,Arena
 let InputMode=matchMedia('(pointer:coarse)').matches?'touch':'key';
 
 function NewRun(){
- Stats={Damage:8,FireRate:1.6,Bolts:1,Range:230,BoltSpeed:440,Pierce:0,CritChance:.05,CritDamage:0,MaxHp:40,Regen:0,Armor:0,Dodge:0,Speed:150,PickupRange:70,Leech:0,Thorns:0,Knockback:0,BlastRadius:0,CoinBonus:0,XpBonus:0,Luck:0};
+ Stats = {
+		Damage: 5,
+		FireRate: 1.00,
+		Projectile: 1,
+		Range: 200,
+		ProjectileSpeed: 300,
+		Piercing: 0,
+		CriticalChance: 0.05,
+		CriticalDamage: 0,
+		MaximumHealth: 10,
+		Regeneration: 0.50,
+		Defense: 0,
+		Evasion: 0,
+		MovementSpeed: 100,
+		PickupRange: 50,
+		Lifesteal: 0,
+		Thorn: 0,
+		Knockback: 0,
+		BlastRadius: 0,
+		CoinsBonus: 0,
+		ExperienceBonus: 0,
+		Luck: 0
+	};
+	
  Player={X:Arena/2,Y:Arena/2,Hp:Stats.MaxHp,Inv:0,Cooldown:0,KnockX:0,KnockY:0,Xp:0,Level:1,Recoil:0};
  RunStats={Kills:0,Damage:0,Earned:0,Time:0};
  HpView=Player.Hp;Camera.X=Player.X;Camera.Y=Player.Y;
  Wave=1;Coins=0;Pending=0;Time=0;StartWave();
 }
+
 function WaveLength(){return Math.min(30+Wave*2,60)}
 function StartWave(){
  Enemies=[];Bolts=[];EnemyBolts=[];Pickups=[];

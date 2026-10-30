@@ -11,8 +11,6 @@ Scan the QR code below with your mobile device to open and play Shape Swarm.
   <a href="https://cuksob81.github.io/shape-swarm">
     <img src="QR.png" alt="Shape Swarm QR Code" width="250">
   </a>
-  <br>
-  **Scan to Play**
 </p>
 
 **Game URL:** [https://cuksob81.github.io/shape-swarm](https://cuksob81.github.io/shape-swarm)

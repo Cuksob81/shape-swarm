@@ -924,6 +924,415 @@ function ShowMenu(){
  <button class="Btn" data-act="play">Play</button></div>`;
 }
 
+/* >>> SHAPE-SWARM-UPDATE START (v2): saves + export/import + upgrade fixes + objectives + enemies + difficulty */
+
+/* =====================================================================
+   1. RUN SAVES - one resumable slot per mode, overwritten by each new run
+   ===================================================================== */
+const SaveKeyPrefix = 'ShapeSwarmRun_', SaveVersion = 1;
+let SaveWarned = false, MenuNote = '', HordeT = 60, LastObjType = null;
+
+/* Storage layer. To move saves to Firebase/Drive later, replace only Get and Set
+   (a cloud version is async, so the callers below would need await). */
+const SaveStore = {
+  Get(ModeName){
+    try{const Raw = localStorage.getItem(SaveKeyPrefix + ModeName); return Raw ? JSON.parse(Raw) : null}catch(Err){return null}
+  },
+  Set(ModeName, Data){
+    try{localStorage.setItem(SaveKeyPrefix + ModeName, JSON.stringify(Data)); return true}catch(Err){return false}
+  }
+};
+
+function ValidSave(S){
+  return !!S && S.V === SaveVersion && !!S.Player && !!S.Stats && !!S.Elem && !!S.Obj && !!S.RunStats &&
+    typeof S.Round === 'number' && Number.isFinite(S.Player.Hp);
+}
+
+function SnapshotRun(){
+  return {
+    V: SaveVersion, SavedAt: Date.now(), Over: false,
+    ModeKey, SelElem, AutoAim, HordeT, LastObjType,
+    Round, Rounds, RoundTime, Diff, SpawnTimer, Time, Pending, Rerolls, Shots, LastElem, ObjKills,
+    Obj, Player, Stats, Elem, RunStats, Enemies, EnemyBolts, Pickups, Crystals, Zone, Camera, Offers,
+    Bolts: Bolts.map(B => ({...B, Hit: []}))
+  };
+}
+
+function SaveRun(){
+  if(!Player || !Stats || !['play', 'pause', 'level'].includes(Mode)) return false;
+  const Ok = SaveStore.Set(ModeKey, SnapshotRun());
+  if(!Ok && !SaveWarned){SaveWarned = true; ShowBanner('Saving unavailable', 'Browser storage is blocked', '#ff5d73')}
+  return Ok;
+}
+
+/* a finished run keeps its data but can no longer be continued */
+function FinishSave(){
+  const S = SaveStore.Get(ModeKey);
+  if(S && !S.Over){S.Over = true; SaveStore.Set(ModeKey, S)}
+}
+
+function LoadRun(ModeName){
+  const S = SaveStore.Get(ModeName);
+  if(!ValidSave(S) || S.Over || !Modes[ModeName]) return false;
+  try{
+    SelMode = ModeKey = ModeName; SelElem = S.SelElem || SelElem; AutoAim = !!S.AutoAim;
+    HordeT = S.HordeT ?? 45; LastObjType = S.LastObjType ?? null;
+    Round = S.Round; Rounds = S.Rounds; RoundTime = S.RoundTime; Diff = S.Diff; SpawnTimer = S.SpawnTimer; Time = S.Time;
+    Pending = S.Pending; Rerolls = S.Rerolls; Shots = S.Shots; LastElem = S.LastElem; ObjKills = S.ObjKills;
+    Obj = S.Obj; Player = S.Player; Stats = S.Stats; Elem = S.Elem; RunStats = S.RunStats;
+    Enemies = S.Enemies || []; Bolts = S.Bolts || []; EnemyBolts = S.EnemyBolts || [];
+    Pickups = S.Pickups || []; Crystals = S.Crystals || []; Zone = S.Zone || null;
+    Camera = S.Camera || {X: Player.X, Y: Player.Y}; Offers = S.Offers || [];
+    Particles = []; Texts = []; ActiveBanner = null; Shake = 0; HpView = Player.Hp;
+    Mode = 'play'; Ui.className = '';
+    Pause(); /* resume into the pause screen so the player is never dropped into live combat */
+    return true;
+  }catch(Err){return false}
+}
+
+/* =====================================================================
+   2. EXPORT / IMPORT - a save file the player owns (the permanent backup)
+   ===================================================================== */
+function ExportSaves(){
+  const Data = {Game: 'ShapeSwarm', V: SaveVersion, ExportedAt: new Date().toISOString(), Best, Saves: {}};
+  for(const K of Object.keys(Modes)){const S = SaveStore.Get(K); if(S) Data.Saves[K] = S}
+  try{
+    const File = new Blob([JSON.stringify(Data)], {type: 'application/json'}), Link = document.createElement('a');
+    Link.href = URL.createObjectURL(File);
+    Link.download = 'shape-swarm-saves-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(Link); Link.click(); Link.remove();
+    setTimeout(() => URL.revokeObjectURL(Link.href), 2000);
+    MenuNote = 'Saves exported.';
+  }catch(Err){MenuNote = 'Export failed in this browser.'}
+  ShowMenu();
+}
+
+function ImportSaves(){
+  const Input = document.createElement('input');
+  Input.type = 'file'; Input.accept = '.json,application/json';
+  Input.onchange = () => {
+    const F = Input.files && Input.files[0]; if(!F) return;
+    if(F.size > 8e6){MenuNote = 'Import failed: file too large.'; ShowMenu(); return}
+    const Reader = new FileReader();
+    Reader.onerror = () => {MenuNote = 'Import failed: could not read the file.'; ShowMenu()};
+    Reader.onload = () => {
+      let Data = null; try{Data = JSON.parse(Reader.result)}catch(Err){}
+      if(!Data || Data.Game !== 'ShapeSwarm' || !Data.Saves || typeof Data.Saves !== 'object'){
+        MenuNote = 'Import failed: not a Shape Swarm save file.'; ShowMenu(); return;
+      }
+      let Count = 0;
+      for(const K of Object.keys(Modes)){
+        const S = Data.Saves[K];
+        if(!ValidSave(S)) continue;
+        if(SaveStore.Get(K) && !confirm('Replace your current ' + K + ' save with the imported one?')) continue;
+        if(SaveStore.Set(K, S)) Count++;
+      }
+      if(Data.Best && typeof Data.Best === 'object'){
+        for(const K of Object.keys(Modes)){const V = +Data.Best[K]; if(V > (Best[K] || 0)) Best[K] = V}
+        StorageSet('ShapeSwarmBest2', JSON.stringify(Best));
+      }
+      MenuNote = Count ? 'Imported ' + Count + ' save' + (Count > 1 ? 's' : '') + '.' : 'No valid saves were imported.';
+      ShowMenu();
+    };
+    Reader.readAsText(F);
+  };
+  Input.click();
+}
+
+/* menu: Continue button + Export/Import buttons */
+function ContinueHtml(){
+  const S = SaveStore.Get(SelMode);
+  if(!ValidSave(S) || S.Over) return '';
+  return `<button class="Btn Alt" style="margin:4px" data-act="continue">Continue ${SelMode} · Round ${S.Round} · Lv ${S.Player.Level} · ${FormatTime(S.RunStats.Time)}</button>`;
+}
+const ShowMenuBase = ShowMenu;
+ShowMenu = function(){
+  ShowMenuBase();
+  const Box = Ui.querySelector('.Box'), PlayBtn = Ui.querySelector('[data-act="play"]');
+  if(!Box || !PlayBtn) return;
+  const C = ContinueHtml();
+  if(C) PlayBtn.insertAdjacentHTML('beforebegin', C);
+  PlayBtn.style.margin = '4px';
+  Box.insertAdjacentHTML('beforeend',
+    '<div class="Row" style="margin-top:10px"><button class="Btn Alt" data-act="export">Export saves</button><button class="Btn Alt" data-act="import">Import saves</button></div>' +
+    (MenuNote ? '<p style="color:var(--Cyan)">' + MenuNote + '</p>' : ''));
+  MenuNote = '';
+};
+
+/* capture phase: runs before the game's own click handler */
+Ui.addEventListener('click', Ev => {
+  const Button = Ev.target.closest('button'); if(!Button) return;
+  switch(Button.dataset.act){
+    case 'menu': SaveRun(); break;
+    case 'continue': if(!LoadRun(SelMode)) ShowMenu(); break;
+    case 'export': ExportSaves(); break;
+    case 'import': ImportSaves(); break;
+  }
+}, true);
+
+setInterval(SaveRun, 2000);
+addEventListener('pagehide', SaveRun);
+document.addEventListener('visibilitychange', () => {if(document.hidden) SaveRun()});
+
+/* a new run overwrites that mode's slot at once; game over closes it */
+const NewRunBase = NewRun;
+NewRun = function(){HordeT = 60; LastObjType = null; NewRunBase(); SaveRun()};
+const GameOverBase = GameOver;
+GameOver = function(Won){FinishSave(); GameOverBase(Won)};
+
+/* =====================================================================
+   3. UPGRADE FIXES
+   - whole-number stats (Extra bolt, Piercer) only exist at tiers where the
+     value is strictly different, so rarity always means "strictly better"
+   - Plating (Defense) no longer rounds to the same number on neighbouring tiers
+   - upgrades for stats that are already capped are no longer offered
+   ===================================================================== */
+const IntRules = {
+  Projectile: {3: 1, 5: 2},          /* Epic +1, Mythical +2 */
+  Piercing:   {2: 1, 4: 2}           /* Rare +1, Legendary +2 */
+};
+const DefenseItem = Items.find(I => I.Key === 'Defense');
+if(DefenseItem) delete DefenseItem.IsInt;
+
+function SnapTier(Key, Tier){
+  let BestTier = -1;
+  for(const T of Object.keys(IntRules[Key])) if(+T <= Tier && +T > BestTier) BestTier = +T;
+  return BestTier;
+}
+
+ItemValue = function(It, Tier){
+  const Rule = IntRules[It.Key];
+  if(Rule) return Rule[Tier] ?? 0;
+  /* 3 decimals: the original rounded to 2, so Leech Common (1.5%) and Uncommon (2.25%) both became 2% */
+  return It.IsInt ? IntTier[Tier] * It.Value : Math.round(It.Value * TierMult[Tier] * 1000) / 1000;
+};
+
+RollOffers = function(){
+  const Open = ElemNames.filter(N => Elem[N] < 5), Out = [];
+  if(Open.length) Out.push({Kind: 'Elem', Name: Open[Math.floor(Math.random() * Open.length)]});
+  const Pool = Shuffle([...Items.map(It => ({Kind: 'Item', Item: It})), ...Open.map(N => ({Kind: 'Elem', Name: N}))]);
+  for(const P of Pool){
+    if(Out.length >= 5) break;
+    if(P.Kind === 'Elem'){
+      if(Out.some(O => O.Kind === 'Elem' && O.Name === P.Name)) continue;
+      Out.push(P); continue;
+    }
+    const Key = P.Item.Key, Cap = StatCaps[Key];
+    if(Cap !== undefined && Stats[Key] >= Cap) continue;
+    let Tier = RollTier();
+    if(IntRules[Key]){Tier = SnapTier(Key, Tier); if(Tier < 0) continue}
+    Out.push({Kind: 'Item', Item: P.Item, Tier});
+  }
+  return Shuffle(Out);
+};
+
+/* =====================================================================
+   4. DIFFICULTY - gentle start, nightmare finish (Standard / Quickplay),
+      straight line in Endless. Recomputed every frame so it climbs smoothly.
+   ===================================================================== */
+const DiffCurves = {
+  Standard:  {Lo: .75, Hi: 7.0, K: 1.8},
+  Quickplay: {Lo: .85, Hi: 5.5, K: 1.6}
+};
+
+function DiffNow(){
+  const Cfg = Modes[ModeKey], Frac = Clamp(1 - RoundTime / Cfg.RoundLen, 0, 1), Pos = (Round - 1) + Frac;
+  if(!Cfg.Total) return .9 + Pos * .3;                                  /* Endless: linear */
+  const C = DiffCurves[ModeKey] || DiffCurves.Standard, P = Clamp(Pos / Rounds, 0, 1);
+  return C.Lo + (C.Hi - C.Lo) * Math.pow(P, C.K);
+}
+function UpdateDifficulty(){Diff = DiffNow() * (Obj && Obj.Type === 'survive' && !Obj.Done ? 1.15 : 1)}
+
+/* late-game "Horde incoming" bursts */
+function HordeTick(Dt){
+  HordeT -= Dt;
+  if(HordeT > 0 || Diff < 2.2) return;
+  const Count = Math.min(40, Math.round(6 + Diff * 2.2));
+  for(let I = 0; I < Count && Enemies.length < 140; I++) SpawnEnemy(PickType());
+  ShowBanner('Horde incoming', 'Hold the line', '#ff5d73'); Shake = Math.max(Shake, 6);
+  HordeT = Math.max(24, 62 - Diff * 5);
+}
+
+/* =====================================================================
+   5. NEW ENEMIES (kinds 5-9) - added after the five original kinds
+   ===================================================================== */
+if(EnemyTypes.length === 5){
+  EnemyTypes.push(
+    {Hp: 34, Speed: 46,  Radius: 14, Damage: 9,  Sides: 6,  Color: '#6df0a0', XpValue: 5},  /* 5 Splitter: splits into 2 Shards on death */
+    {Hp: 8,  Speed: 135, Radius: 6,  Damage: 4,  Sides: 3,  Color: '#6df0a0', XpValue: 1},  /* 6 Shard: fast, tiny (only from Splitters) */
+    {Hp: 22, Speed: 44,  Radius: 11, Damage: 7,  Sides: 4,  Color: '#ffa14f', XpValue: 6},  /* 7 Sniper: stops at range and shoots */
+    {Hp: 42, Speed: 52,  Radius: 13, Damage: 13, Sides: 7,  Color: '#ff2e88', XpValue: 7},  /* 8 Charger: telegraphs, then dashes */
+    {Hp: 15, Speed: 85,  Radius: 10, Damage: 10, Sides: 12, Color: '#ffd23b', XpValue: 4}   /* 9 Bomber: explodes on contact or death */
+  );
+}
+const HuntNames = {0: 'chasers', 1: 'swifts', 2: 'heavies', 5: 'splitters', 7: 'snipers', 8: 'chargers', 9: 'bombers'};
+
+/* [minimum difficulty, kind, weight] - each kind fades in over 1.2 difficulty above its minimum */
+const SpawnTable = [[0, 0, 100], [1.0, 1, 38], [1.4, 5, 24], [1.7, 2, 26], [2.1, 9, 20], [2.6, 7, 18], [3.2, 8, 18], [3.8, 3, 20]];
+PickType = function(){
+  if(Obj && Obj.Type === 'hunt' && !Obj.Done && Math.random() < .45) return Obj.Kind;
+  let Total = 0;
+  const W = SpawnTable.map(([Min, Kind, Weight]) => {
+    const Ramp = Min === 0 ? 1 : Clamp((Diff - Min) / 1.2, 0, 1);
+    const V = Weight * Ramp * (Kind === 0 ? 1 / (1 + Diff * .25) : 1);
+    Total += V; return V;
+  });
+  let R = Math.random() * Total;
+  for(let I = 0; I < W.length; I++){R -= W[I]; if(R <= 0) return SpawnTable[I][1]}
+  return 0;
+};
+
+/* cap late-game contact damage so a single hit is never an instant kill */
+const SpawnEnemyBase = SpawnEnemy;
+SpawnEnemy = function(Kind, Elite){
+  SpawnEnemyBase(Kind, Elite);
+  const En = Enemies[Enemies.length - 1];
+  if(En && En.Kind === Kind) En.Damage = Math.min(En.Damage, EnemyTypes[Kind].Damage * 2.6);
+};
+
+function SplitEnemy(En){
+  if(Enemies.length > 150) return;
+  for(let I = 0; I < 2; I++){
+    SpawnEnemy(6);
+    const S = Enemies[Enemies.length - 1];
+    S.X = Clamp(En.X + (I ? 14 : -14), 10, Arena - 10); S.Y = Clamp(En.Y + RandRange(-10, 10), 10, Arena - 10);
+    S.SpawnLeft = S.SpawnTotal = .2;
+  }
+}
+function Explode(En){
+  Ring(En.X, En.Y, '#ffd23b', 90, .4); Burst(En.X, En.Y, '#ffd23b', 22, 240, .5); Shake = Math.max(Shake, 5);
+  if(Mode === 'play' && Math.hypot(En.X - Player.X, En.Y - Player.Y) < 85) HurtPlayer(En.Damage * 1.4, En);
+}
+
+/* per-frame behaviours for the new enemy kinds (runs after the normal update) */
+function EnemyBehaviors(Dt){
+  for(const En of Enemies){
+    if(En.Dead || En.SpawnLeft > 0) continue;
+    const Dx = Player.X - En.X, Dy = Player.Y - En.Y, Dist = Math.hypot(Dx, Dy) || 1;
+    if(En.BaseSpeed === undefined) En.BaseSpeed = En.Speed;
+    if(En.Kind === 7){                                   /* Sniper */
+      En.Speed = Dist < 300 ? 0 : En.BaseSpeed;
+      En.ShotT = (En.ShotT ?? RandRange(1, 2.4)) - Dt;
+      if(En.ShotT <= 0 && Dist < 460 && !(En.StunT > 0)){
+        EnemyShot(En, Math.atan2(Dy, Dx)); En.ShotT = Math.max(1.1, 2.6 - Diff * .12);
+      }
+    }else if(En.Kind === 8){                             /* Charger */
+      En.ChargeT = (En.ChargeT ?? RandRange(2, 4)) - Dt;
+      if(En.Windup > 0){
+        En.Speed = 0; En.Windup -= Dt;
+        if(En.Windup <= 0){En.KnockX += Dx / Dist * 520; En.KnockY += Dy / Dist * 520; Burst(En.X, En.Y, En.Color, 8, 160, .3); En.Speed = En.BaseSpeed}
+      }else if(En.ChargeT <= 0 && Dist < 420 && !(En.StunT > 0)){
+        En.Windup = .55; En.ChargeT = Math.max(2.2, 4.5 - Diff * .2); En.Speed = 0; Ring(En.X, En.Y, En.Color, En.Radius * 3, .55);
+      }
+    }else if(En.Kind === 9){                             /* Bomber: fuse on contact */
+      if(Dist < PlayerRadius + En.Radius + 6){En.Dead = true; En.Hp = 0; KillEnemy(En)}
+    }
+  }
+}
+const UpdateBase = Update;
+Update = function(Dt){
+  UpdateBase(Dt);
+  if(Mode === 'play' && Player) EnemyBehaviors(Dt);
+};
+
+const KillEnemyBase = KillEnemy;
+KillEnemy = function(En){
+  KillEnemyBase(En);
+  if(Obj && !Obj.Done){
+    if(Obj.Type === 'hunt' && En.Kind === Obj.Kind) Obj.Have++;
+    if(Obj.Type === 'boss' && En.Kind === 4 && !En.Elite) Obj.Have = 1;
+  }
+  if(En.Kind === 5) SplitEnemy(En);
+  if(En.Kind === 9) Explode(En);
+};
+
+/* =====================================================================
+   6. OBJECTIVES - 10 types (was 4)
+   slay, gather, elite, zone (original) + survive, flawless, hunt, harvest,
+   ambush (relics that spring an ambush) and boss (every 5th round)
+   ===================================================================== */
+const ObjPool = ['slay', 'gather', 'elite', 'zone', 'survive', 'flawless', 'hunt', 'harvest', 'ambush'];
+const HuntPool = [[0, 1], [1, 2], [5, 3], [9, 4], [2, 4], [7, 5], [8, 6]];   /* [kind, earliest round] */
+
+function PickObjective(){
+  if(Round === 1) return 'slay';
+  const Pool = ObjPool.filter(T => T !== LastObjType && !(T === 'hunt' && Round < 2) && !(T === 'flawless' && Round < 3));
+  return Pool[Math.floor(Math.random() * Pool.length)];
+}
+
+StartRound = function(){
+  const Cfg = Modes[ModeKey], Boss = Round % 5 === 0;
+  RoundTime = Cfg.RoundLen; Diff = DiffNow(); SpawnTimer = .5; ObjKills = 0;
+  Enemies = Enemies.filter(En => !En.Elite); Crystals = []; Zone = null;
+  const Type = Boss ? 'boss' : PickObjective();
+  LastObjType = Type;
+  Obj = {Type, Have: 0, Need: 1, Done: false};
+  if(Type === 'slay') Obj.Need = Math.round(22 + Round * 7);
+  if(Type === 'gather' || Type === 'ambush'){
+    Obj.Need = Type === 'ambush' ? 4 : 5;
+    if(Type === 'ambush'){Obj.Type = 'gather'; Obj.Ambush = true; Obj.Seen = 0}
+    for(let I = 0; I < Obj.Need; I++) Crystals.push({X: RandRange(150, Arena - 150), Y: RandRange(150, Arena - 150), Phase: RandRange(0, Tau)});
+  }
+  if(Type === 'elite') SpawnEnemy(4, true);
+  if(Type === 'zone'){
+    Obj.Need = 22 + Round * 2;
+    const A = RandRange(0, Tau);
+    Zone = {X: Clamp(Player.X + Math.cos(A) * 450, 200, Arena - 200), Y: Clamp(Player.Y + Math.sin(A) * 450, 200, Arena - 200), R: 140};
+  }
+  if(Type === 'survive') Obj.Need = Math.round(Cfg.RoundLen * .7);
+  if(Type === 'flawless') Obj.Need = Math.min(45, 16 + Round * 2);
+  if(Type === 'hunt'){
+    const Open = HuntPool.filter(H => Round >= H[1]);
+    Obj.Kind = Open[Math.floor(Math.random() * Open.length)][0];
+    Obj.Need = Math.min(30, 8 + Round);
+  }
+  if(Type === 'harvest') Obj.Need = 20 + Round * 3;
+  if(Type === 'boss') SpawnEnemy(4, false);
+  ShowBanner('Round ' + Round, Boss ? 'Boss incoming' : ObjectiveName(), '#4ff0d6');
+};
+
+ObjectiveName = function(){
+  if(!Obj) return '';
+  if(Obj.Ambush) return 'Seize the relics';
+  if(Obj.Type === 'hunt') return 'Hunt ' + (HuntNames[Obj.Kind] || 'targets');
+  return ({slay: 'Slay enemies', gather: 'Collect the crystals', elite: 'Defeat the elite', zone: 'Hold the zone',
+    survive: 'Survive', flawless: 'Stay untouched', harvest: 'Collect XP orbs', boss: 'Defeat the boss'})[Obj.Type] || 'Objective';
+};
+ObjectiveText = function(){
+  const Timed = Obj.Type === 'zone' || Obj.Type === 'survive' || Obj.Type === 'flawless';
+  const Prog = Math.floor(Obj.Have) + '/' + Obj.Need + (Timed ? 's' : '');
+  return Obj.Done ? ObjectiveName() + ' ✔' : ObjectiveName() + ' ' + Prog;
+};
+
+const ObjectiveTickBase = ObjectiveTick;
+ObjectiveTick = function(Dt){
+  UpdateDifficulty();
+  if(Obj && !Obj.Done && (Obj.Type === 'survive' || Obj.Type === 'flawless')) Obj.Have += Dt;
+  ObjectiveTickBase(Dt);                                 /* handles crystals, zone and the completion reward */
+  if(Obj && Obj.Ambush && !Obj.Done && Obj.Have > (Obj.Seen || 0)){
+    Obj.Seen = Obj.Have;
+    const Count = 3 + Math.floor(Round / 3);
+    for(let I = 0; I < Count && Enemies.length < 140; I++) SpawnEnemy(PickType());
+    ShowBanner('Ambush!', 'The relic was a trap', '#ff5d73'); Shake = Math.max(Shake, 5);
+  }
+  HordeTick(Dt);
+};
+
+const HurtPlayerBase = HurtPlayer;
+HurtPlayer = function(Amount, Source){
+  const Hit = HurtPlayerBase(Amount, Source);
+  if(Hit && Obj && Obj.Type === 'flawless' && !Obj.Done) Obj.Have = 0;
+  return Hit;
+};
+
+const GainXpBase = GainXp;
+GainXp = function(V){
+  if(Obj && Obj.Type === 'harvest' && !Obj.Done) Obj.Have++;
+  GainXpBase(V);
+};
+
+/* <<< SHAPE-SWARM-UPDATE END */
+
 /* ---------- input ---------- */
 const Joys = {Move: null, Aim: null}, Keys = {};
 let MouseX = 0, MouseY = 0;

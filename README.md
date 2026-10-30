@@ -1,4 +1,6 @@
 
+<div align="center">
+
 # Shape Swarm
 
 **Shape Swarm** is a browser-based, top-down arena survival game. Fight through increasingly dangerous waves of geometric enemies, collect coins, choose upgrades, and see how long your core can survive.
@@ -7,21 +9,22 @@
 
 Scan the QR code below with your mobile device to open and play Shape Swarm.
 
-<p align="center">
-  <a href="https://cuksob81.github.io/shape-swarm">
-    <img src="QR.png" alt="Shape Swarm QR Code" width="250">
-  </a>
-</p>
+<a href="https://cuksob81.github.io/shape-swarm">
+  <img src="QR.png" alt="Shape Swarm QR Code" width="250">
+</a>
 
-**Game URL:** [https://cuksob81.github.io/shape-swarm](https://cuksob81.github.io/shape-swarm)
+**[PLAY SHAPE SWARM](https://cuksob81.github.io/shape-swarm)**
 
-- **Mobile:** Scan the QR code using your camera.
-- **Desktop:** Open the game directly using the link above.
+**Mobile:** Scan the QR code using your camera.
+
+**Desktop:** Open the game directly using the link above.
+
+---
 
 ## Controls
 
 | Platform | Controls |
-| --- | --- |
+|:---:|:---|
 | Desktop | Move with **WASD** or the **arrow keys**. |
 | Mobile / touch | Use the on-screen joystick near the bottom-center of the screen. |
 | Sound | Press **M** to toggle sound effects. Sound starts after your first interaction, as required by most browsers. |
@@ -50,6 +53,7 @@ Press **M** to mute or unmute sound effects.
 ```text
 .
 ├── index.html   # Complete game
+├── QR.png       # Game QR code
 └── README.md    # Project description and instructions
 ```
 
@@ -96,3 +100,5 @@ Test desktop keyboard controls and mobile touch controls after significant updat
 ## License
 
 No license has been specified yet. Unless a license is added, normal copyright restrictions apply to the project's code and assets.
+
+</div>

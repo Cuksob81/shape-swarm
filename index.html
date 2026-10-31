@@ -308,32 +308,25 @@ summary {
     display:block;
 }
 
-from {
-    opacity:0;
-    transform:translateY(14px) scale(.94);
+@keyframes PopIn {
+    from { opacity:0; transform:translateY(14px) scale(.94); }
+    to { opacity:1; transform:none; }
 }
 
-to {
-    opacity:1;
-    transform:none;
+@keyframes FadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
 }
 
-from {
-    opacity:0;
-}
-
-to {
-    opacity:1;
-}
-
-#UiLayer,.Card.In {
-    animation:none;
+@media (prefers-reduced-motion:reduce) {
+    #UiLayer,.Card.In,.MenuWrap .Rise,.PlayBtn { animation:none !important; }
 }
 
 @media (orientation:portrait) and (max-width:700px) {
     #Rotate { display:flex; }
 }
 
+@media (max-height:520px) {
 h1 {
     font-size:34px;
 }
@@ -383,6 +376,187 @@ p {
 
 .StatGrid {
     grid-template-columns:1fr 1fr;
+}
+}
+
+/* ---------- main menu ---------- */
+#UiLayer.On.Menu {
+    align-items:stretch;
+    background:linear-gradient(90deg,rgba(8,10,24,.93) 0%,rgba(8,10,24,.62) 30%,rgba(8,10,24,.10) 50%,rgba(8,10,24,.62) 70%,rgba(8,10,24,.93) 100%);
+}
+.MenuWrap {
+    width:100%;
+    max-width:1240px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(120px,.55fr) minmax(0,1fr);
+    grid-template-rows:1fr auto;
+    column-gap:24px;
+    row-gap:14px;
+    align-items:center;
+    text-align:left;
+}
+.MHero { grid-column:1; }
+.MPanels { grid-column:3; display:flex; flex-direction:column; gap:12px; }
+.MFoot {
+    grid-column:1 / -1;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px 16px;
+    flex-wrap:wrap;
+    padding-top:12px;
+    border-top:1px solid #ffffff14;
+    font-size:13px;
+    color:var(--Dim);
+}
+.Glyphs span { font-size:22px; margin-right:12px; display:inline-block; animation:Bob 3s ease-in-out infinite; }
+.Glyphs span:nth-child(2) { animation-delay:-.7s; }
+.Glyphs span:nth-child(3) { animation-delay:-1.4s; }
+.Glyphs span:nth-child(4) { animation-delay:-2.1s; }
+.MenuWrap h1 {
+    font-size:clamp(46px,7.2vw,104px);
+    line-height:.9;
+    margin:8px 0 16px;
+    text-transform:uppercase;
+    background:linear-gradient(120deg,#e8ecff 0%,#4ff0d6 48%,#9b7bff 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    color:transparent;
+    filter:drop-shadow(0 0 22px rgba(79,240,214,.30));
+}
+.MenuWrap .Lead { font-size:16px; line-height:1.5; color:#b7bfe6; max-width:430px; margin:0 0 22px; }
+.PlayBtn {
+    font:inherit;
+    font-weight:700;
+    font-size:26px;
+    letter-spacing:.05em;
+    color:#07131a;
+    background:linear-gradient(135deg,#4ff0d6,#8bf7e6);
+    border:0;
+    border-radius:14px;
+    padding:16px 42px;
+    min-height:64px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    animation:PlayPulse 2.2s infinite;
+    transition:transform .12s,filter .12s;
+}
+.PlayBtn:hover { filter:brightness(1.1); transform:translateY(-2px); }
+.PlayBtn:active { transform:scale(.96); }
+.Cont {
+    font:inherit;
+    display:block;
+    text-align:left;
+    color:var(--Ink);
+    background:rgba(21,26,54,.8);
+    border:2px solid var(--Violet);
+    border-radius:12px;
+    padding:10px 16px;
+    margin-top:12px;
+    cursor:pointer;
+    min-width:260px;
+    transition:transform .12s,background .12s;
+}
+.Cont:hover { transform:translateY(-2px); background:rgba(31,38,80,.95); }
+.Cont b { display:block; font-size:16px; }
+.Cont span { font-size:12px; color:var(--Dim); }
+.Loadout { margin-top:14px; font-size:14px; color:var(--Dim); }
+.Loadout b { color:var(--Ink); }
+.Note { margin-top:8px; font-size:13px; color:var(--Cyan); }
+.Panel {
+    background:rgba(16,20,46,.74);
+    border:1px solid #2a3166;
+    border-radius:16px;
+    padding:14px;
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+}
+.PTitle { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--Dim); margin:0 0 10px; }
+.PGrid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.PGrid2 { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.Pick {
+    font:inherit;
+    color:var(--Ink);
+    background:rgba(21,26,54,.8);
+    border:2px solid #2a3166;
+    border-radius:12px;
+    padding:12px;
+    cursor:pointer;
+    text-align:left;
+    transition:transform .12s,border-color .12s,box-shadow .12s,background .12s;
+}
+.Pick:hover { transform:translateY(-2px); border-color:var(--Chip,var(--Cyan)); }
+.Pick.Sel {
+    border-color:var(--Chip,var(--Cyan));
+    background:rgba(31,38,80,.96);
+    box-shadow:0 0 20px color-mix(in srgb,var(--Chip,#4ff0d6) 40%,transparent);
+}
+.ModeCard { display:flex; flex-direction:column; gap:2px; }
+.PBig { font-size:24px; font-weight:700; color:var(--Chip); line-height:1.1; }
+.PName { font-size:15px; font-weight:700; }
+.PSub { display:block; font-size:12px; color:var(--Dim); line-height:1.3; }
+.PBest { font-size:11px; color:var(--Dim); margin-top:4px; }
+.ElemCard { display:flex; gap:10px; align-items:center; }
+.EGlyph {
+    width:40px; height:40px; flex:none; border-radius:50%;
+    display:grid; place-items:center; font-size:20px; color:var(--Chip);
+    background:color-mix(in srgb,var(--Chip) 18%,transparent);
+    border:1px solid color-mix(in srgb,var(--Chip) 55%,transparent);
+}
+.EText { display:flex; flex-direction:column; gap:1px; min-width:0; }
+.PPerk { display:block; font-size:11px; color:var(--Chip); }
+.Hint { margin-right:14px; white-space:nowrap; }
+.Hint kbd {
+    font:inherit; font-size:12px; font-weight:700; color:var(--Ink);
+    background:#151a36; border:1px solid #2a3166; border-bottom-width:2px;
+    border-radius:6px; padding:1px 7px; margin-right:4px;
+}
+.Ghost {
+    font:inherit; font-weight:700; font-size:13px; color:var(--Dim);
+    background:transparent; border:1px solid #2a3166; border-radius:8px;
+    padding:7px 12px; margin-left:8px; cursor:pointer;
+}
+.Ghost:hover { color:var(--Ink); border-color:var(--Violet); }
+.MenuWrap.Enter .Rise { animation:Rise .55s cubic-bezier(.2,.8,.2,1) both; animation-delay:calc(var(--d,0)*90ms); }
+@keyframes Rise { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+@keyframes Bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-4px); } }
+@keyframes PlayPulse {
+    0% { box-shadow:0 0 0 0 rgba(79,240,214,.45); }
+    70% { box-shadow:0 0 0 18px rgba(79,240,214,0); }
+    100% { box-shadow:0 0 0 0 rgba(79,240,214,0); }
+}
+@media (max-width:1000px) {
+    #UiLayer.On.Menu { background:rgba(8,10,24,.84); }
+    .MenuWrap { grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); }
+    .MPanels { grid-column:2; }
+}
+@media (max-width:760px) {
+    .MenuWrap { grid-template-columns:1fr; grid-template-rows:auto; align-items:start; }
+    .MHero,.MPanels { grid-column:1; }
+    .MHero { text-align:center; }
+    .MenuWrap .Lead { margin-left:auto; margin-right:auto; }
+    .Cont { margin-left:auto; margin-right:auto; }
+}
+@media (max-height:520px) {
+    .MenuWrap { column-gap:16px; row-gap:8px; }
+    .Glyphs { display:none; }
+    .MenuWrap h1 { font-size:clamp(34px,6vw,52px); margin:0 0 10px; }
+    .MenuWrap .Lead { display:none; }
+    .PlayBtn { font-size:20px; padding:10px 28px; min-height:48px; }
+    .Cont { padding:6px 12px; margin-top:8px; }
+    .Panel { padding:8px 10px; border-radius:12px; }
+    .PTitle { margin-bottom:6px; }
+    .Pick { padding:7px 9px; }
+    .PBig { font-size:18px; }
+    .PSub,.PPerk,.PBest { display:none; }
+    .EGlyph { width:28px; height:28px; font-size:14px; }
+    .PGrid2 { grid-template-columns:repeat(4,1fr); }
+    .ElemCard { flex-direction:column; gap:4px; text-align:center; }
+    .MFoot { padding-top:6px; font-size:12px; }
 }
 </style>
 </head>
@@ -915,13 +1089,38 @@ function GameOver(Won){
 }
 
 function ShowMenu(){
+ const Fresh = !Ui.querySelector('.MenuWrap');
  Ui.className = 'On';
- const ModeChips = Object.keys(Modes).map(K => `<button class="Chip ${K === SelMode ? 'Sel' : ''}" data-mode="${K}">${K}<small>${Modes[K].Info}${Best[K] ? ' · best ' + FormatTime(Best[K]) : ''}</small></button>`).join('');
- const ElemChips = ElemNames.map(N => `<button class="Chip ${N === SelElem ? 'Sel' : ''}" style="--Chip:${Elems[N].Color}" data-elem="${N}"><span style="color:${Elems[N].Color}">${Elems[N].Glyph}</span> ${N}<small>${Elems[N].Desc.split('.')[0]}</small></button>`).join('');
- Ui.innerHTML = `<div class="Box"><h1>Shape Swarm</h1><p>Master Fire, Water, Earth and Wind. Every round has an objective: complete it for a bonus upgrade, fail it and lose health.</p>
- <h3>Mode</h3><div class="Chips">${ModeChips}</div><h3>Starting element</h3><div class="Chips">${ElemChips}</div>
- <p style="margin-top:14px">PC: WASD to move, mouse to aim, Q toggles auto-aim, P pauses.<br>Phone (landscape): left stick moves, right stick aims, button toggles auto-aim.<br>Your core fires automatically.</p>
- <button class="Btn" data-act="play">Play</button></div>`;
+ const ModeColor = {Standard: '#4ff0d6', Quickplay: '#ffc857', Endless: '#9b7bff'};
+ const ModeCards = Object.keys(Modes).map(K => {
+  const M = Modes[K], Rd = M.Total ? M.Total / M.RoundLen + ' rounds' : 'Until you fall';
+  return `<button class="Pick ModeCard ${K === SelMode ? 'Sel' : ''}" style="--Chip:${ModeColor[K] || '#4ff0d6'}" data-mode="${K}"><span class="PBig">${M.Total ? M.Info : '∞'}</span><b class="PName">${K}</b><span class="PSub">${Rd}</span><span class="PBest">${Best[K] ? 'Best ' + FormatTime(Best[K]) : 'No record yet'}</span></button>`;
+ }).join('');
+ const ElemCards = ElemNames.map(N => {
+  const E = Elems[N], Parts = E.Desc.split('. ');
+  return `<button class="Pick ElemCard ${N === SelElem ? 'Sel' : ''}" style="--Chip:${E.Color}" data-elem="${N}"><span class="EGlyph">${E.Glyph}</span><span class="EText"><b class="PName">${N}</b><span class="PSub">${Parts[0]}</span><span class="PPerk">${(Parts[1] || '').replace(/\.$/, '')}</span></span></button>`;
+ }).join('');
+ const Glyphs = ElemNames.map(N => `<span style="color:${Elems[N].Color}">${Elems[N].Glyph}</span>`).join('');
+ const Hints = InputMode === 'touch'
+  ? '<span class="Hint"><kbd>Left stick</kbd>move</span><span class="Hint"><kbd>Right stick</kbd>aim + fire</span><span class="Hint"><kbd>Button</kbd>auto-aim</span>'
+  : '<span class="Hint"><kbd>WASD</kbd>move</span><span class="Hint"><kbd>Mouse</kbd>aim</span><span class="Hint"><kbd>Click</kbd>or<kbd style="margin-left:4px">Space</kbd>fire</span><span class="Hint"><kbd>Q</kbd>auto-aim</span><span class="Hint"><kbd>P</kbd>pause</span><span class="Hint"><kbd>Enter</kbd>play</span>';
+ const Bst = Best[SelMode] ? ' · best <b>' + FormatTime(Best[SelMode]) + '</b>' : '';
+ Ui.innerHTML = `<div class="MenuWrap ${Fresh ? 'Enter' : ''}">
+ <div class="MHero">
+  <div class="Glyphs Rise" style="--d:0">${Glyphs}</div>
+  <h1 class="Rise" style="--d:1">Shape<br>Swarm</h1>
+  <p class="Lead Rise" style="--d:2">Master Fire, Water, Earth and Wind. Every round has an objective: complete it for a bonus upgrade, fail it and lose health.</p>
+  <div class="Rise" style="--d:3"><button class="PlayBtn" data-act="play"><span>▶</span>Play</button>${ContinueHtml()}</div>
+  <div class="Loadout Rise" style="--d:4"><b>${SelMode}</b> · starting with <b style="color:${Elems[SelElem].Color}">${SelElem}</b>${Bst}</div>
+  ${MenuNote ? '<div class="Note">' + MenuNote + '</div>' : ''}
+ </div>
+ <div class="MPanels">
+  <div class="Panel Rise" style="--d:2"><div class="PTitle">Mode</div><div class="PGrid3">${ModeCards}</div></div>
+  <div class="Panel Rise" style="--d:3"><div class="PTitle">Starting element</div><div class="PGrid2">${ElemCards}</div></div>
+ </div>
+ <div class="MFoot Rise" style="--d:5"><div>${Hints}</div><div><button class="Ghost" data-act="export">Export saves</button><button class="Ghost" data-act="import">Import saves</button></div></div>
+</div>`;
+ MenuNote = '';
 }
 
 /* >>> SHAPE-SWARM-UPDATE START (v2): saves + export/import + upgrade fixes + objectives + enemies + difficulty */
@@ -1043,21 +1242,8 @@ function ImportSaves(){
 function ContinueHtml(){
   const S = SaveStore.Get(SelMode);
   if(!ValidSave(S) || S.Over) return '';
-  return `<button class="Btn Alt" style="margin:4px" data-act="continue">Continue ${SelMode} · Round ${S.Round} · Lv ${S.Player.Level} · ${FormatTime(S.RunStats.Time)}</button>`;
+  return `<button class="Cont" data-act="continue"><b>Continue ${SelMode}</b><span>Round ${S.Round} · Lv ${S.Player.Level} · ${FormatTime(S.RunStats.Time)}</span></button>`;
 }
-const ShowMenuBase = ShowMenu;
-ShowMenu = function(){
-  ShowMenuBase();
-  const Box = Ui.querySelector('.Box'), PlayBtn = Ui.querySelector('[data-act="play"]');
-  if(!Box || !PlayBtn) return;
-  const C = ContinueHtml();
-  if(C) PlayBtn.insertAdjacentHTML('beforebegin', C);
-  PlayBtn.style.margin = '4px';
-  Box.insertAdjacentHTML('beforeend',
-    '<div class="Row" style="margin-top:10px"><button class="Btn Alt" data-act="export">Export saves</button><button class="Btn Alt" data-act="import">Import saves</button></div>' +
-    (MenuNote ? '<p style="color:var(--Cyan)">' + MenuNote + '</p>' : ''));
-  MenuNote = '';
-};
 
 /* capture phase: runs before the game's own click handler */
 Ui.addEventListener('click', Ev => {
@@ -1335,7 +1521,7 @@ GainXp = function(V){
 
 /* ---------- input ---------- */
 const Joys = {Move: null, Aim: null}, Keys = {};
-let MouseX = 0, MouseY = 0;
+let MouseX = 0, MouseY = 0, Trigger = false, Firing = false;
 const AimBtn = () => ({X: Width - 138, Y: SafeTop + 48, W: 122, H: 32});
 
 function JoyMove(J, Ev){
@@ -1350,6 +1536,7 @@ Canvas.addEventListener('pointerdown', Ev => {
  if(Mode !== 'play') return;
  const B = AimBtn();
  if(Ev.clientX >= B.X && Ev.clientX <= B.X + B.W && Ev.clientY >= B.Y && Ev.clientY <= B.Y + B.H){AutoAim = !AutoAim; return}
+ if(Ev.pointerType === 'mouse' && Ev.button === 0) Trigger = true;
  if(InputMode !== 'touch') return;
  const Side = Ev.clientX < Width / 2 ? 'Move' : 'Aim';
  if(Joys[Side]) return;
@@ -1366,16 +1553,20 @@ const PointerUp = Ev => {for(const K of ['Move', 'Aim']) if(Joys[K] && Joys[K].I
 Canvas.addEventListener('pointerup', PointerUp);
 Canvas.addEventListener('pointercancel', PointerUp);
 Canvas.addEventListener('contextmenu', Ev => Ev.preventDefault());
+addEventListener('pointerup', Ev => {if(Ev.pointerType === 'mouse') Trigger = false});
+addEventListener('pointercancel', Ev => {if(Ev.pointerType === 'mouse') Trigger = false});
 
 addEventListener('keydown', Ev => {
  const Key = Ev.key.toLowerCase();
  if(Key === 'm' && !Ev.repeat){ToggleSound(); return}
  if(('wasd'.includes(Key) && Key.length === 1) || Key.startsWith('arrow')){InputMode = 'key'; Keys[Key] = 1; Ev.preventDefault()}
+ else if(Key === ' ' && Mode === 'play'){Keys[' '] = 1; Ev.preventDefault()}
  else if(Key === 'q' && Mode === 'play') AutoAim = !AutoAim;
+ else if(Key === 'enter' && !Ev.repeat && (Mode === 'menu' || Mode === 'over')){const Go = Ui.querySelector('[data-act="play"]'); if(Go){Ev.preventDefault(); Go.click()}}
  else if((Key === 'p' || Key === 'escape') && !Ev.repeat) Pause();
 });
 addEventListener('keyup', Ev => {Keys[Ev.key.toLowerCase()] = 0});
-addEventListener('blur', () => {for(const K in Keys) Keys[K] = 0; if(Mode === 'play') Pause()});
+addEventListener('blur', () => {Trigger = false; for(const K in Keys) Keys[K] = 0; if(Mode === 'play') Pause()});
 
 /* ---------- update ---------- */
 function Update(Dt){
@@ -1413,7 +1604,10 @@ function Update(Dt){
  if(AutoAim){if(Target) Aim = Math.atan2(Target.Y - Player.Y, Target.X - Player.X)}
  else if(InputMode === 'touch'){const J = Joys.Aim; if(J && Math.hypot(J.Dx, J.Dy) > 10) Aim = Math.atan2(J.Dy, J.Dx)}
  else Aim = Math.atan2(MouseY - (Height / 2 + (Player.Y - Camera.Y) * Zoom), MouseX - (Width / 2 + (Player.X - Camera.X) * Zoom));
- if(Player.Cooldown <= 0 && (!AutoAim || Target)) Volley(Target);
+ /* auto-aim fires by itself when something is in range; manual aim fires only while you hold the trigger */
+ const Holding = InputMode === 'touch' ? !!(Joys.Aim && Math.hypot(Joys.Aim.Dx, Joys.Aim.Dy) > 10) : (Trigger || !!Keys[' ']);
+ Firing = AutoAim ? !!Target : Holding;
+ if(Player.Cooldown <= 0 && Firing) Volley(Target);
 
  /* enemies */
  for(const En of Enemies){
@@ -1523,12 +1717,7 @@ function Shape(X, Y, Radius, Sides, Rot, Color, Fill){
 
 function Draw(){
  Context.setTransform(Dpr, 0, 0, Dpr, 0, 0); Context.fillStyle = '#0d1020'; Context.fillRect(0, 0, Width, Height);
- if(!Player){
-  Context.strokeStyle = '#1a2146'; Context.lineWidth = 1; Context.beginPath();
-  for(let I = 0; I < Width; I += 40){Context.moveTo(I, 0); Context.lineTo(I, Height)}
-  for(let I = 0; I < Height; I += 40){Context.moveTo(0, I); Context.lineTo(Width, I)}
-  Context.stroke(); return;
- }
+ if(!Player){DrawAttract(); return}
  const Sx = RandRange(-1, 1) * Shake, Sy = RandRange(-1, 1) * Shake;
  Context.setTransform(Dpr * Zoom, 0, 0, Dpr * Zoom, Dpr * (Width / 2 - Camera.X * Zoom + Sx), Dpr * (Height / 2 - Camera.Y * Zoom + Sy));
  Context.fillStyle = '#10152e'; Context.fillRect(0, 0, Arena, Arena);
@@ -1656,6 +1845,21 @@ function DrawHud(){
  Context.fillStyle = AutoAim ? '#07131a' : '#e8ecff'; Context.textAlign = 'center'; Context.font = '700 13px "Chakra Petch",sans-serif';
  Context.fillText('Auto-aim: ' + (AutoAim ? 'ON' : 'OFF') + (InputMode === 'key' ? ' (Q)' : ''), B.X + B.W / 2, B.Y + 21);
 
+ if(!AutoAim && Mode === 'play'){
+  Context.fillStyle = '#8f98c8'; Context.textAlign = 'right'; Context.font = '700 12px "Chakra Petch",sans-serif';
+  Context.fillText(InputMode === 'key' ? 'Hold click / Space to fire' : 'Hold the aim stick to fire', B.X + B.W, B.Y + B.H + 16);
+ }
+ const OverBtn = MouseX >= B.X && MouseX <= B.X + B.W && MouseY >= B.Y && MouseY <= B.Y + B.H;
+ Canvas.style.cursor = (!AutoAim && Mode === 'play' && InputMode === 'key' && !OverBtn) ? 'none' : '';
+ if(!AutoAim && Mode === 'play' && InputMode === 'key' && !OverBtn){
+  const Rc = Firing ? 8 : 12, Col = Firing ? '#ffffff' : Elems[LastElem].Color;
+  Context.strokeStyle = Col; Context.lineWidth = 2; Context.globalAlpha = Firing ? 1 : .85;
+  Poly(MouseX, MouseY, Rc, 0); Context.stroke();
+  Context.beginPath();
+  for(const [Ax, Ay] of [[1, 0], [-1, 0], [0, 1], [0, -1]]){Context.moveTo(MouseX + Ax * (Rc + 3), MouseY + Ay * (Rc + 3)); Context.lineTo(MouseX + Ax * (Rc + 9), MouseY + Ay * (Rc + 9))}
+  Context.stroke(); Context.globalAlpha = 1;
+ }
+
  /* element levels */
  ElemNames.forEach((N, I) => {
   const X = Width / 2 - 100 + I * 52, Y = Height - 26 - SafeBottom;
@@ -1698,9 +1902,83 @@ function Loop(Stamp){
  if(Player){
   UpdateFx(Dt);
   if(Mode === 'play' && !Blocked) Update(Dt);
- }
+ }else AttractUpdate(Dt);
  Draw();
 }
+
+/* ---------- attract mode: a live demo fights behind the menu ---------- */
+const Demo = {T: 0, Foes: [], Shots: [], Fx: [], Cd: 0, Spawn: 0, Aim: 0, Shot: 0, Kills: 0};
+const DemoBurst = (X, Y, Color, N, V) => {for(let I = 0; I < N && Demo.Fx.length < 220; I++){const A = RandRange(0, Tau), S = RandRange(.3, 1) * V; Demo.Fx.push({X, Y, Vx: Math.cos(A) * S, Vy: Math.sin(A) * S, L: .5, M: .5, C: Color, S: RandRange(1.5, 3)})}};
+const DemoRing = (X, Y, Color, R) => {if(Demo.Fx.length < 220) Demo.Fx.push({X, Y, Vx: 0, Vy: 0, L: .4, M: .4, C: Color, S: R, Ring: true})};
+
+function AttractUpdate(Dt){
+ const D = Demo, Cx = Width / 2, Cy = Height / 2, Z = Zoom;
+ D.T += Dt; D.Spawn -= Dt; D.Cd -= Dt;
+ if(D.Spawn <= 0 && D.Foes.length < 28){
+  D.Spawn = .3;
+  const A = RandRange(0, Tau), R = Math.hypot(Width, Height) / 2 + 30, K = Math.random(), Ty = K < .55 ? EnemyTypes[0] : K < .85 ? EnemyTypes[1] : EnemyTypes[2];
+  D.Foes.push({X: Cx + Math.cos(A) * R, Y: Cy + Math.sin(A) * R, Hp: Ty.Hp * .6, Sp: Ty.Speed * Z * 1.1, R: Ty.Radius * Z, Sides: Ty.Sides, Color: Ty.Color, Rot: RandRange(0, Tau), Spin: RandRange(-1, 1), Flash: 0});
+ }
+ let Near = null, ND = 1e9;
+ for(const F of D.Foes){
+  const Dx = Cx - F.X, Dy = Cy - F.Y, Len = Math.hypot(Dx, Dy) || 1;
+  F.X += Dx / Len * F.Sp * Dt; F.Y += Dy / Len * F.Sp * Dt; F.Rot += F.Spin * Dt; F.Flash -= Dt;
+  if(Len < ND){ND = Len; Near = F}
+  if(Len < 22 * Z){F.Hp = 0; DemoBurst(F.X, F.Y, '#ff5d73', 10, 160); DemoRing(Cx, Cy, '#ff5d73', 60 * Z)}
+ }
+ if(Near){
+  const Target = Math.atan2(Near.Y - Cy, Near.X - Cx), Diff2 = Math.atan2(Math.sin(Target - D.Aim), Math.cos(Target - D.Aim));
+  D.Aim += Diff2 * Math.min(1, Dt * 14);
+  if(D.Cd <= 0 && ND < Math.hypot(Width, Height) * .6){
+   D.Cd = .17; const Name = ElemNames[D.Shot++ % 4], Sp = 640 * Z;
+   if(D.Shots.length < 60) D.Shots.push({X: Cx, Y: Cy, Vx: Math.cos(D.Aim) * Sp, Vy: Math.sin(D.Aim) * Sp, Color: Elems[Name].Color, L: 1.6});
+   DemoBurst(Cx + Math.cos(D.Aim) * 20 * Z, Cy + Math.sin(D.Aim) * 20 * Z, Elems[Name].Color, 2, 100);
+  }
+ }
+ for(const B of D.Shots){
+  B.X += B.Vx * Dt; B.Y += B.Vy * Dt; B.L -= Dt;
+  for(const F of D.Foes){
+   if(F.Hp > 0 && Math.hypot(F.X - B.X, F.Y - B.Y) < F.R + 5 * Z){
+    F.Hp -= 14; F.Flash = .08; B.L = 0; DemoBurst(F.X, F.Y, B.Color, 3, 100);
+    if(F.Hp <= 0){D.Kills++; DemoBurst(F.X, F.Y, F.Color, 14, 220); DemoRing(F.X, F.Y, F.Color, F.R * 2.4)}
+    break;
+   }
+  }
+ }
+ D.Shots = D.Shots.filter(B => B.L > 0);
+ D.Foes = D.Foes.filter(F => F.Hp > 0);
+ for(const P of D.Fx){P.L -= Dt; P.X += P.Vx * Dt; P.Y += P.Vy * Dt; P.Vx *= 1 - 4 * Dt; P.Vy *= 1 - 4 * Dt}
+ D.Fx = D.Fx.filter(P => P.L > 0);
+}
+
+function DrawAttract(){
+ const D = Demo, Cx = Width / 2, Cy = Height / 2, Z = Zoom, Core = Elems[ElemNames[D.Shot % 4]].Color;
+ Context.strokeStyle = '#1a2146'; Context.lineWidth = 1; Context.beginPath();
+ const Off = (D.T * 12) % 40;
+ for(let I = -Off; I < Width; I += 40){Context.moveTo(I, 0); Context.lineTo(I, Height)}
+ for(let I = -Off; I < Height; I += 40){Context.moveTo(0, I); Context.lineTo(Width, I)}
+ Context.stroke();
+ for(const F of D.Foes) Shape(F.X, F.Y, F.R, F.Sides, F.Rot, F.Color, F.Flash > 0 ? '#ffffff' : null);
+ for(const B of D.Shots){
+  Context.globalAlpha = .5; Context.strokeStyle = B.Color; Context.lineWidth = 4 * Z; Context.beginPath(); Context.moveTo(B.X - B.Vx * .03, B.Y - B.Vy * .03); Context.lineTo(B.X, B.Y); Context.stroke();
+  Context.globalAlpha = 1; Shape(B.X, B.Y, 4 * Z, 0, 0, B.Color, '#ffffff');
+ }
+ for(const P of D.Fx){
+  const Fade = P.L / P.M; Context.globalAlpha = Fade;
+  if(P.Ring){Context.strokeStyle = P.C; Context.lineWidth = 2; Poly(P.X, P.Y, P.S * (1 - Fade) + 3, 0); Context.stroke()}
+  else{Context.fillStyle = P.C; Context.beginPath(); Context.arc(P.X, P.Y, P.S * (.4 + .6 * Fade), 0, Tau); Context.fill()}
+ }
+ Context.globalAlpha = .15 + .05 * Math.sin(D.T * 3); Context.strokeStyle = Core; Context.lineWidth = 1; Poly(Cx, Cy, 260 * Z, 0); Context.stroke(); Context.globalAlpha = 1;
+ Shape(Cx, Cy, (PlayerRadius + Math.sin(D.T * 5) * .8) * Z, 0, 0, Core);
+ Shape(Cx, Cy, 7 * Z, 6, D.T * 1.5, Core, Core);
+ Context.strokeStyle = '#e8ecff'; Context.lineWidth = 3; Context.beginPath();
+ Context.moveTo(Cx + Math.cos(D.Aim) * 13 * Z, Cy + Math.sin(D.Aim) * 13 * Z); Context.lineTo(Cx + Math.cos(D.Aim) * 21 * Z, Cy + Math.sin(D.Aim) * 21 * Z); Context.stroke();
+}
+
+/* menu gets a see-through layer so the demo shows behind it */
+const ShowMenuLive = ShowMenu;
+ShowMenu = function(){ShowMenuLive(); Ui.classList.add('Menu')};
+
 ShowMenu(); requestAnimationFrame(Loop);
 </script>
 </body>

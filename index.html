@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0d1020">
 <title>Shape Swarm</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%20xmlns%3Ac2pa%3D%22http%3A//c2pa.org/manifest%22%3E%3Cmetadata%3E%3Cc2pa%3Amanifest%3EAAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTozM2U1MmNlNy1hMGQ1LTQ4NDgtYWE1Zi0yOTRjYmE0ZTkzN2EAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaM1pvO5v6hfGuP4gyJ%2BfSMcAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpkMDEyMzc4Ni1hMjgxLTRhZTUtODZlNi1iMTI5NWY5MDBkYTdscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNogZAA8A0zs5WBdbwKqeHkbgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggxe4d4VNTivjdaUrp3xPyfXXrP65QEzlnKSrBk3OkHjmkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaKLkt3K4zDftPFcTnuJdNNcAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCDsgL5xLZtgnX4gbEPgBOApk22jkBuW4RiJheIS7MspsmRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBh9Zmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjMzZTUyY2U3LWEwZDUtNDg0OC1hYTVmLTI5NGNiYTRlOTM3YS9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOmI2ZWVhMzkwLTU2ZTYtNDczYy1hOWExLTkwOTk3YWQ5Y2MwNHJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCDF7h3hU1OK%2BN1pSunfE/J9des/rlATOWcpKsGTc6QeOaJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggxtohvrDBNnqq3l7K2%2BewUdyhKOWYow3jGANZlir%2BLZ%2BiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggnpWj2A%2B3MBU%2B5hk3nbID0aQnZ4HGp8qj6dKuRpE3m%2BZ0Y2xhaW1fZ2VuZXJhdG9yX2luZm%2BjZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj%2BOPEz5o%2BnMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1%2BUCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9%2B1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQPFI6yGN45QgK/QQ8QtPf3vedgtb29nhtMDtKRobcpXVleDD6cAK2xwHtL6cZ4ww%2BwPYn8IC%2BVGCrsY8FcEoJT8%3D%3C/c2pa%3Amanifest%3E%3C/metadata%3E%3Crect%20width%3D%22512%22%20height%3D%22512%22%20fill%3D%22%230d1020%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%22120%22%20fill%3D%22%234ff0d644%22%20stroke%3D%22%234ff0d6%22%20stroke-width%3D%2212%22/%3E%3Cpolygon%20points%3D%22256%2C196%20308%2C226%20308%2C286%20256%2C316%20204%2C286%20204%2C226%22%20fill%3D%22%234ff0d6%22/%3E%3Cpolygon%20points%3D%2296%2C120%20136%2C190%2056%2C190%22%20fill%3D%22%23ff7a3d%22/%3E%3Crect%20x%3D%22380%22%20y%3D%2290%22%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23c9a066%22/%3E%3Ccircle%20cx%3D%22110%22%20cy%3D%22410%22%20r%3D%2234%22%20fill%3D%22%234fb4ff%22/%3E%3Cpolygon%20points%3D%22410%2C380%20450%2C420%20410%2C460%20370%2C420%22%20fill%3D%22%238ff5d2%22/%3E%3C/svg%3E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&display=swap" rel="stylesheet">
 
@@ -558,6 +561,27 @@ p {
     .ElemCard { flex-direction:column; gap:4px; text-align:center; }
     .MFoot { padding-top:6px; font-size:12px; }
 }
+.PGrid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.WsCost { display:block; font-size:12px; font-weight:700; color:var(--Amber); margin-top:2px; }
+.Pick.Dim { opacity:.55; }
+.Recap { color:var(--Amber); font-weight:700; margin:-8px 0 16px; line-height:1.5; }
+.Card:hover { transform:translateY(-6px) rotate(-1deg) scale(1.04); }
+.Card.Shine { position:relative; overflow:hidden; }
+.Card.Shine::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.24) 50%,transparent 70%); transform:translateX(-120%); animation:Shine 2.6s infinite; }
+@keyframes Shine { 0%,55% { transform:translateX(-120%); } 100% { transform:translateX(120%); } }
+.Reduce *,.Reduce *::after { animation:none !important; transition:none !important; }
+.PChip { border:1px solid; border-radius:8px; padding:3px 9px; font-weight:700; font-size:13px; }
+.SetRow { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:7px 0; text-align:left; }
+.SetRow input { flex:1; max-width:260px; accent-color:#4ff0d6; }
+.SetTog { text-align:left; }
+.Tabs { display:flex; gap:6px; }
+.TabBtn { flex:1; font:inherit; font-weight:700; font-size:14px; color:var(--Dim); background:rgba(21,26,54,.7); border:1px solid #2a3166; border-radius:10px; padding:9px 10px; cursor:pointer; }
+.TabBtn.On { color:var(--Ink); border-color:var(--Cyan); background:rgba(31,38,80,.95); }
+.MPanels.Tab_run .T-shop,.MPanels.Tab_run .T-mut,.MPanels.Tab_shop .T-run,.MPanels.Tab_shop .T-mut,.MPanels.Tab_mut .T-run,.MPanels.Tab_mut .T-shop { display:none; }
+.WsScroll { max-height:min(58vh,520px); overflow:auto; padding:2px; }
+.WGlyph { display:inline-grid; place-items:center; width:20px; margin-right:4px; }
+.EGlyph svg,.ElemIco { display:block; }
+.PChip { display:inline-flex; align-items:center; gap:5px; }
 </style>
 </head>
 
@@ -598,7 +622,7 @@ try{Best = JSON.parse(StorageGet('ShapeSwarmBest2') || '{}') || {}}catch(Err){Be
 
 
 /* ---------- sound effects (generated in-browser; no extra files) ---------- */
-let AudioEngine = null, SoundEnabled = true, LastHitSound = 0;
+let AudioEngine = null, SoundEnabled = true, LastHitSound = 0, SfxVol = 1;
 function InitAudio(){
  try{
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -616,7 +640,7 @@ function PlayTone(Frequency, Duration = .07, Type = 'sine', Volume = .025, EndFr
  Osc.frequency.setValueAtTime(Math.max(1, Frequency), Start);
  Osc.frequency.exponentialRampToValueAtTime(Math.max(1, EndFrequency), Start + Duration);
  Gain.gain.setValueAtTime(.0001, Start);
- Gain.gain.exponentialRampToValueAtTime(Math.max(.0001, Volume), Start + .008);
+ Gain.gain.exponentialRampToValueAtTime(Math.max(.0001, Volume * SfxVol), Start + .008);
  Gain.gain.exponentialRampToValueAtTime(.0001, Start + Duration);
  Osc.connect(Gain); Gain.connect(Audio.destination); Osc.start(Start); Osc.stop(Start + Duration + .015);
 }
@@ -667,14 +691,14 @@ const EnemyTypes = [
 
 const Item = (Name, Glyph, Key, Value, Opts, Desc) => ({Name, Glyph, Key, Value, ...Opts});
 const Items = [
- Item('Power', '●', 'Damage', 2, {Unit: 'Damage'}),
+ Item('Power', '●', 'Damage', 3, {Unit: 'Damage'}),
  Item('Overclock', '▲', 'FireRate', .15, {Unit: 'Fire Rate'}),
  Item('Extra bolt', '⬢', 'Projectile', 1, {IsInt: 1, Unit: 'Projectile'}),
  Item('Scope', '◉', 'Range', 20, {Unit: 'Range'}),
  Item('Accelerator', '▷', 'ProjectileSpeed', 40, {Unit: 'Bolt Speed'}),
  Item('Piercer', '◇', 'Piercing', 1, {IsInt: 1, Unit: 'Pierce'}),
- Item('Precision', '◎', 'CriticalChance', .04, {IsPct: 1, Unit: 'Crit Chance'}),
- Item('Lethality', '✦', 'CriticalDamage', .20, {IsPct: 1, Unit: 'Crit Damage'}),
+ Item('Precision', '◎', 'CriticalChance', .025, {IsPct: 1, Unit: 'Crit Chance'}),
+ Item('Lethality', '✦', 'CriticalDamage', .12, {IsPct: 1, Unit: 'Crit Damage'}),
  Item('Hull', '■', 'MaximumHealth', 15, {Unit: 'Maximum Health'}),
  Item('Repair', '✚', 'Regeneration', .4, {Unit: 'Regeneration'}),
  Item('Plating', '▣', 'Defense', 1, {IsInt: 1, Unit: 'Defense'}),
@@ -692,7 +716,7 @@ const Items = [
  Item('Bulk', '⬤', 'ProjectileSize', .10, {IsPct: 1, Unit: 'Bolt Size'})
 ];
 
-const StatCaps = {Projectile: 10, Evasion: .6, CriticalChance: .8, Piercing: 8, Lifesteal: .2, BlastRadius: 150, Range: 520, FireRate: 8, Defense: 40};
+const StatCaps = {Projectile: 10, Evasion: .6, CriticalChance: .6, CriticalDamage: 1.5, Piercing: 8, Lifesteal: .2, BlastRadius: 150, Range: 520, FireRate: 8, Defense: 40};
 const TierMult = [1, 1.5, 2, 2.5, 4, 5], IntTier = [1, 1, 2, 2, 3, 4];
 const RarityNames = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythical'];
 const RarityColors = ['#FFFFFF', '#1EFF00', '#0070DD', '#A335EE', '#FF8000', '#1FDBDE'];
@@ -906,7 +930,7 @@ function EnemyShot(En, Angle){EnemyBolts.push({X: En.X, Y: En.Y, Vx: Math.cos(An
 
 /* ---------- effects ---------- */
 function Burst(X, Y, Color, Count, Speed, Life){
- for(let I = 0; I < Count && Particles.length < 350; I++){
+ for(let I = 0; I < Count && Particles.length < ParticleCap; I++){
   const Angle = RandRange(0, Tau), V = RandRange(.3, 1) * Speed;
   Particles.push({X, Y, Vx: Math.cos(Angle) * V, Vy: Math.sin(Angle) * V, Life: Life || .5, MaxLife: Life || .5, Color, Size: RandRange(1.5, 3.5)});
  }
@@ -930,13 +954,14 @@ function UpdateFx(Dt){
 }
 
 /* ---------- combat ---------- */
-const EffDamage = () => Stats.Damage * (1 + .08 * Elem.Fire);
+const EffDamage = () => Stats.Damage * (1 + .08 * Elem.Fire) * (1 + (Stats.DamageMult || 0));
 const EffFireRate = () => Stats.FireRate * (1 + .06 * Elem.Water);
 const EffDefense = () => Stats.Defense + 1.5 * Elem.Earth;
 const EffSpeed = () => Stats.MovementSpeed * (1 + .04 * Elem.Wind);
 
 function DamageEnemy(En, Amount, IsCrit, Vx, Vy, Color, Knock){
  if(En.Dead) return;
+ if(IsCrit) HitStop = Math.max(HitStop, .03);
  PlaySfx('Hit');
  En.Hp -= Amount; En.Flash = .1; RunStats.Damage += Amount;
  FloatText(En.X, En.Y - En.Radius, Math.round(Amount), IsCrit ? '#ffc857' : (Color || '#ffffff'));
@@ -1022,18 +1047,18 @@ function CardHtml(Offer, Index, Animate){
  let Color, Label, Glyph, Name, Text;
  if(Offer.Kind === 'Elem'){
   const E = Elems[Offer.Name], Lv = Elem[Offer.Name];
-  Color = E.Color; Glyph = E.Glyph; Name = Offer.Name;
+  Color = E.Color; Glyph = ElemIcon(Offer.Name, 34); Name = Offer.Name;
   Label = Lv ? 'Element · Lv ' + Lv + ' → ' + (Lv + 1) : 'Element · Unlock';
   Text = E.Desc;
  }else{
   Color = RarityColors[Offer.Tier]; Label = RarityNames[Offer.Tier]; Glyph = Offer.Item.Glyph; Name = Offer.Item.Name; Text = ItemText(Offer.Item, Offer.Tier);
  }
- return `<button class="Card ${Animate ? 'In' : ''}" style="--Index:${Index};border-color:${Color};box-shadow:0 0 16px ${Color}44" data-pick="${Index}"><div class="Glyph" style="color:${Color}">${Glyph}</div><em style="color:${Color}">${Label}</em><b>${Name}</b><span>${Text}</span></button>`;
+ return `<button class="Card ${Animate ? 'In' : ''} ${Offer.Tier >= 3 ? 'Shine' : ''}" style="--Index:${Index};border-color:${Color};box-shadow:0 0 16px ${Color}44" data-pick="${Index}"><div class="Glyph" style="color:${Color}">${Glyph}</div><em style="color:${Color}">${Label}</em><b>${Name}</b><span>${Text}</span></button>`;
 }
 
 function StatsHtml(){
- const ElemLine = ElemNames.map(N => `<div style="color:${Elems[N].Color}">${Elems[N].Glyph} ${N}<b>Lv ${Elem[N]}</b></div>`).join('');
- return `<details><summary>Stats · Level ${Player.Level} · HP ${Math.ceil(Player.Hp)}/${Stats.MaximumHealth}</summary><div class="StatGrid">${ElemLine}${StatList.map(S => `<div>${S[1]}<b>${S[2](Stats[S[0]])}</b></div>`).join('')}</div></details>`;
+ const ElemLine = ElemNames.map(N => `<div style="color:${Elems[N].Color}">${ElemIcon(N, 12)} ${N}<b>Lv ${Elem[N]}</b></div>`).join('');
+ return `<details><summary>Stats · Level ${Player.Level} · HP ${Math.ceil(Player.Hp)}/${Stats.MaximumHealth}</summary><div class="StatGrid">${ElemLine}${StatList.map(S => `<div>${S[1]}<b>${S[2](Stats[S[0]] ?? 0)}</b></div>`).join('')}</div></details>`;
 }
 
 function OpenLevel(){
@@ -1098,12 +1123,16 @@ function ShowMenu(){
  }).join('');
  const ElemCards = ElemNames.map(N => {
   const E = Elems[N], Parts = E.Desc.split('. ');
-  return `<button class="Pick ElemCard ${N === SelElem ? 'Sel' : ''}" style="--Chip:${E.Color}" data-elem="${N}"><span class="EGlyph">${E.Glyph}</span><span class="EText"><b class="PName">${N}</b><span class="PSub">${Parts[0]}</span><span class="PPerk">${(Parts[1] || '').replace(/\.$/, '')}</span></span></button>`;
+  return `<button class="Pick ElemCard ${N === SelElem ? 'Sel' : ''}" style="--Chip:${E.Color}" data-elem="${N}"><span class="EGlyph">${ElemIcon(N, 22)}</span><span class="EText"><b class="PName">${N}</b><span class="PSub">${Parts[0]}</span><span class="PPerk">${(Parts[1] || '').replace(/\.$/, '')}</span></span></button>`;
  }).join('');
- const Glyphs = ElemNames.map(N => `<span style="color:${Elems[N].Color}">${Elems[N].Glyph}</span>`).join('');
+ const Glyphs = ElemNames.map(N => `<span>${ElemIcon(N, 22)}</span>`).join('');
  const Hints = InputMode === 'touch'
   ? '<span class="Hint"><kbd>Left stick</kbd>move</span><span class="Hint"><kbd>Right stick</kbd>aim + fire</span><span class="Hint"><kbd>Button</kbd>auto-aim</span>'
-  : '<span class="Hint"><kbd>WASD</kbd>move</span><span class="Hint"><kbd>Mouse</kbd>aim</span><span class="Hint"><kbd>Click</kbd>or<kbd style="margin-left:4px">Space</kbd>fire</span><span class="Hint"><kbd>Q</kbd>auto-aim</span><span class="Hint"><kbd>P</kbd>pause</span><span class="Hint"><kbd>Enter</kbd>play</span>';
+  : '<span class="Hint"><kbd>WASD</kbd>move</span><span class="Hint"><kbd>Mouse</kbd>aim</span><span class="Hint"><kbd>Click</kbd>or<kbd style="margin-left:4px">Space</kbd>fire</span><span class="Hint"><kbd>Shift</kbd>dash</span><span class="Hint"><kbd>E</kbd>nova</span><span class="Hint"><kbd>Q</kbd>auto-aim</span><span class="Hint"><kbd>P</kbd>pause</span><span class="Hint"><kbd>Enter</kbd>play</span>';
+const WS = Workshop.map(W => {const L = Meta.Up[W.Key] || 0, C = WorkshopCost(L, W), Mx = W.Max || 5, Max = L >= Mx, Can = !Max && Meta.Shards >= C;
+  return `<button class="Pick WsCard ${Can ? '' : 'Dim'}" style="--Chip:#ffc857" data-up="${W.Key}"><span class="PName"><span class="WGlyph">${W.Glyph}</span>${W.Name}</span><span class="PSub">${W.Perk}</span><span class="PBest">${'●'.repeat(L)}${'○'.repeat(Mx - L)}</span><span class="WsCost">${Max ? 'MAX' : '◆ ' + C}</span></button>`}).join('');
+ const MutDef = {Glass: ['Glass Cannon', '½ HP, +60% damage'], Heavy: ['Heavy Core', '-25% speed, +35% damage'], Frenzy: ['Frenzy', '+50% fire rate, -25% HP'], Swarm: ['Swarm', '+25% enemy pressure'], Fast: ['Fast Foes', '+25% enemy speed'], Armored: ['Armored', 'Foes +40% HP, you +30% XP'], Volatile: ['Volatile', 'Foes explode when they die'], Elite: ['Elite Rush', 'An elite arrives every 25s'], Blood: ['Blood Pact', 'HP drains, kills heal you'], NoRegen: ['No Regen', 'Health never regenerates']};
+ const MutChips = Object.keys(MutDef).map(K => `<button class="Pick ${Mut[K] ? 'Sel' : ''}" style="--Chip:#ff5d73" data-mut="${K}"><span class="PName">${MutDef[K][0]}</span><span class="PSub">${MutDef[K][1]}</span></button>`).join('');
  const Bst = Best[SelMode] ? ' · best <b>' + FormatTime(Best[SelMode]) + '</b>' : '';
  Ui.innerHTML = `<div class="MenuWrap ${Fresh ? 'Enter' : ''}">
  <div class="MHero">
@@ -1114,11 +1143,13 @@ function ShowMenu(){
   <div class="Loadout Rise" style="--d:4"><b>${SelMode}</b> · starting with <b style="color:${Elems[SelElem].Color}">${SelElem}</b>${Bst}</div>
   ${MenuNote ? '<div class="Note">' + MenuNote + '</div>' : ''}
  </div>
- <div class="MPanels">
-  <div class="Panel Rise" style="--d:2"><div class="PTitle">Mode</div><div class="PGrid3">${ModeCards}</div></div>
-  <div class="Panel Rise" style="--d:3"><div class="PTitle">Starting element</div><div class="PGrid2">${ElemCards}</div></div>
+ <div class="MPanels Tab_${MenuTab}"><div class="Tabs Rise" style="--d:1"><button class="TabBtn ${MenuTab === 'run' ? 'On' : ''}" data-tab="run">Run</button><button class="TabBtn ${MenuTab === 'shop' ? 'On' : ''}" data-tab="shop">Workshop · ◆ ${Meta.Shards}</button><button class="TabBtn ${MenuTab === 'mut' ? 'On' : ''}" data-tab="mut">Mutators${Object.values(Mut).some(Boolean) ? ' · ' + Object.values(Mut).filter(Boolean).length : ''}</button></div>
+  <div class="Panel Rise T-run" style="--d:2"><div class="PTitle">Mode</div><div class="PGrid3">${ModeCards}</div></div>
+  <div class="Panel Rise T-run" style="--d:3"><div class="PTitle">Starting element</div><div class="PGrid2">${ElemCards}</div></div>
+  <div class="Panel Rise T-shop" style="--d:4"><div class="PTitle">Workshop <b style="float:right;color:var(--Amber)">◆ ${Meta.Shards} shards</b></div><div class="PGrid3 WsScroll">${WS}</div></div>
+  <div class="Panel Rise T-mut" style="--d:5"><div class="PTitle">Mutators <b style="float:right;color:var(--Coral)">+20% shards each</b></div><div class="PGrid2 WsScroll">${MutChips}</div></div>
  </div>
- <div class="MFoot Rise" style="--d:5"><div>${Hints}</div><div><button class="Ghost" data-act="export">Export saves</button><button class="Ghost" data-act="import">Import saves</button></div></div>
+ <div class="MFoot Rise" style="--d:5"><div>${Hints}</div><div><button class="Ghost" data-act="settings">Settings</button><button class="Ghost" data-act="export">Export saves</button><button class="Ghost" data-act="import">Import saves</button></div></div>
 </div>`;
  MenuNote = '';
 }
@@ -1536,9 +1567,12 @@ Canvas.addEventListener('pointerdown', Ev => {
  if(Mode !== 'play') return;
  const B = AimBtn();
  if(Ev.clientX >= B.X && Ev.clientX <= B.X + B.W && Ev.clientY >= B.Y && Ev.clientY <= B.Y + B.H){AutoAim = !AutoAim; return}
+ const Gr = GearBtn();
+ if(InputMode === 'touch' && Ev.clientX >= Gr.X && Ev.clientX <= Gr.X + Gr.W && Ev.clientY >= Gr.Y && Ev.clientY <= Gr.Y + Gr.H){Joys.Move = null; Joys.Aim = null; Pause(); if(Mode === 'pause') RenderSettings(); return}
  if(Ev.pointerType === 'mouse' && Ev.button === 0) Trigger = true;
  if(InputMode !== 'touch') return;
- const Side = Ev.clientX < Width / 2 ? 'Move' : 'Aim';
+ for(const [N, X, Y] of TouchBtns()) if(Math.hypot(Ev.clientX - X, Ev.clientY - Y) < 36){N === 'Dash' ? Dash() : Nova(); return}
+ const Side = ((Ev.clientX < Width / 2) !== Settings.Lefty) ? 'Move' : 'Aim';
  if(Joys[Side]) return;
  Joys[Side] = {Id: Ev.pointerId, Ox: Ev.clientX, Oy: Ev.clientY, Dx: 0, Dy: 0};
  try{Canvas.setPointerCapture(Ev.pointerId)}catch(Err){}
@@ -1560,6 +1594,8 @@ addEventListener('keydown', Ev => {
  const Key = Ev.key.toLowerCase();
  if(Key === 'm' && !Ev.repeat){ToggleSound(); return}
  if(('wasd'.includes(Key) && Key.length === 1) || Key.startsWith('arrow')){InputMode = 'key'; Keys[Key] = 1; Ev.preventDefault()}
+ else if(Key === 'shift' && !Ev.repeat) Dash();
+ else if(Key === 'e' && !Ev.repeat) Nova();
  else if(Key === ' ' && Mode === 'play'){Keys[' '] = 1; Ev.preventDefault()}
  else if(Key === 'q' && Mode === 'play') AutoAim = !AutoAim;
  else if(Key === 'enter' && !Ev.repeat && (Mode === 'menu' || Mode === 'over')){const Go = Ui.querySelector('[data-act="play"]'); if(Go){Ev.preventDefault(); Go.click()}}
@@ -1580,7 +1616,7 @@ function Update(Dt){
  Player.KnockX *= Math.max(0, 1 - 9 * Dt); Player.KnockY *= Math.max(0, 1 - 9 * Dt);
  Player.Inv -= Dt; Player.Recoil = Math.max(0, Player.Recoil - Dt * 8);
  Player.Hp = Math.min(Stats.MaximumHealth, Player.Hp + Stats.Regeneration * Dt);
- if(Len > .2 && Math.random() < .6 && Particles.length < 350) Particles.push({X: Player.X - Mx * 10, Y: Player.Y - My * 10, Vx: -Mx * 30, Vy: -My * 30, Life: .3, MaxLife: .3, Color: Elems[LastElem].Color, Size: 2});
+ if(Len > .2 && Math.random() < .6 && Particles.length < ParticleCap) Particles.push({X: Player.X - Mx * 10, Y: Player.Y - My * 10, Vx: -Mx * 30, Vy: -My * 30, Life: .3, MaxLife: .3, Color: Elems[LastElem].Color, Size: 2});
 
  /* round flow */
  RoundTime -= Dt;
@@ -1594,7 +1630,7 @@ function Update(Dt){
  }
 
  /* aim & fire */
- Player.Cooldown -= Dt;
+ Player.Cooldown -= Dt; Player.DashCd = Math.max(0, (Player.DashCd || 0) - Dt); Player.NovaCd = Math.max(0, (Player.NovaCd || 0) - Dt);
  let Target = null, NearDist = Stats.Range;
  for(const En of Enemies){
   if(En.SpawnLeft > 0) continue;
@@ -1718,7 +1754,7 @@ function Shape(X, Y, Radius, Sides, Rot, Color, Fill){
 function Draw(){
  Context.setTransform(Dpr, 0, 0, Dpr, 0, 0); Context.fillStyle = '#0d1020'; Context.fillRect(0, 0, Width, Height);
  if(!Player){DrawAttract(); return}
- const Sx = RandRange(-1, 1) * Shake, Sy = RandRange(-1, 1) * Shake;
+ const Sx = RandRange(-1, 1) * Shake * (ShakeOn ? 1 : 0), Sy = RandRange(-1, 1) * Shake * (ShakeOn ? 1 : 0);
  Context.setTransform(Dpr * Zoom, 0, 0, Dpr * Zoom, Dpr * (Width / 2 - Camera.X * Zoom + Sx), Dpr * (Height / 2 - Camera.Y * Zoom + Sy));
  Context.fillStyle = '#10152e'; Context.fillRect(0, 0, Arena, Arena);
 
@@ -1763,14 +1799,21 @@ function Draw(){
    Context.fillStyle = '#ff5d73'; Context.fillRect(En.X - En.Radius, En.Y - En.Radius - 9, En.Radius * 2 * En.Hp / En.MaxHp, 3);
   }
  }
+ for(const En of Enemies){
+  if(En.SpawnLeft > 0) continue;
+  if(En.Shield > 0){Context.strokeStyle = '#4fb4ff'; Context.lineWidth = 2; Context.globalAlpha = .4 + .6 * En.Shield / En.MaxHp; Poly(En.X, En.Y, En.Radius + 4, 0); Context.stroke(); Context.globalAlpha = 1}
+  if(En.Trait === 'healer'){Context.strokeStyle = '#4ade80'; Context.lineWidth = 3; Context.beginPath(); Context.moveTo(En.X - 5, En.Y); Context.lineTo(En.X + 5, En.Y); Context.moveTo(En.X, En.Y - 5); Context.lineTo(En.X, En.Y + 5); Context.stroke()}
+  if(En.Tele > 0){Context.globalAlpha = .6; Context.strokeStyle = '#ff5d73'; Context.lineWidth = 2; Context.setLineDash([6, 6]); Context.beginPath(); Context.moveTo(En.X, En.Y); Context.lineTo(Player.X, Player.Y); Context.stroke(); Context.setLineDash([]); Context.globalAlpha = 1}
+  if(En.Boss){Context.fillStyle = En.Color; Context.font = '700 14px "Chakra Petch",sans-serif'; Context.textAlign = 'center'; Context.fillText(En.Boss, En.X, En.Y - En.Radius - 16)}
+ }
  for(const Eb of EnemyBolts){
   Context.globalAlpha = .5; Context.strokeStyle = '#ff8fd0'; Context.lineWidth = 2; Context.beginPath(); Context.moveTo(Eb.X - Eb.Vx * .04, Eb.Y - Eb.Vy * .04); Context.lineTo(Eb.X, Eb.Y); Context.stroke();
   Context.globalAlpha = 1; Shape(Eb.X, Eb.Y, 4, 0, 0, '#ff8fd0', '#ff8fd0');
  }
  for(const Bt of Bolts){
   const Color = Elems[Bt.Elem].Color;
-  Context.globalAlpha = .5; Context.strokeStyle = Color; Context.lineWidth = Bt.Size; Context.beginPath(); Context.moveTo(Bt.X - Bt.Vx * .03, Bt.Y - Bt.Vy * .03); Context.lineTo(Bt.X, Bt.Y); Context.stroke();
-  Context.globalAlpha = 1; Shape(Bt.X, Bt.Y, Bt.Crit ? Bt.Size + 1 : Bt.Size, 0, 0, Color, Bt.Crit ? '#ffc857' : '#ffffff');
+  Context.globalAlpha = .5; Context.strokeStyle = Color; Context.lineWidth = Bt.Size; Context.beginPath(); Context.moveTo(Bt.X - Bt.Vx * (Bt.Elem === 'Wind' ? .07 : .03), Bt.Y - Bt.Vy * (Bt.Elem === 'Wind' ? .07 : .03)); Context.lineTo(Bt.X, Bt.Y); Context.stroke();
+  Context.globalAlpha = 1; Shape(Bt.X, Bt.Y, Bt.Crit ? Bt.Size + 1 : Bt.Size, BoltSides(Bt.Elem), 0, Color, Bt.Crit ? '#ffc857' : '#ffffff');
  }
  for(const Pt of Particles){
   const Fade = Pt.Life / Pt.MaxLife; Context.globalAlpha = Fade;
@@ -1831,6 +1874,14 @@ function DrawHud(){
  Context.textAlign = 'left'; Context.font = '700 17px "Chakra Petch",sans-serif'; Context.fillText('Round ' + Round + (Rounds ? '/' + Rounds : ''), 16, BarY + 14);
  Context.fillStyle = Obj.Done ? '#1eff00' : '#ffc857'; Context.font = '700 13px "Chakra Petch",sans-serif'; Context.fillText(ObjectiveText(), 16, BarY + 32);
  Context.fillStyle = '#4ff0d6'; Context.fillText('Lv ' + Player.Level, 16, BarY + 50);
+ const Dc = Math.max(0, Player.DashCd || 0);
+ Context.fillStyle = '#ffffff22'; Context.fillRect(16, BarY + 58, 64, 4);
+ Context.fillStyle = Dc > 0 ? '#8f98c8' : '#4ff0d6'; Context.fillRect(16, BarY + 58, 64 * (1 - Dc / DashMax()), 4);
+ if(InputMode === 'key'){Context.fillStyle = '#8f98c8'; Context.font = '700 11px "Chakra Petch",sans-serif'; Context.fillText(Dc > 0 ? 'Dash' : 'Dash ready · Shift', 88, BarY + 63)}
+ const Nc = Math.max(0, Player.NovaCd || 0);
+ Context.fillStyle = '#ffffff22'; Context.fillRect(16, BarY + 68, 64, 4);
+ Context.fillStyle = Nc > 0 ? '#8f98c8' : '#ffc857'; Context.fillRect(16, BarY + 68, 64 * (1 - Nc / NovaMax()), 4);
+ if(InputMode === 'key'){Context.fillStyle = '#8f98c8'; Context.font = '700 11px "Chakra Petch",sans-serif'; Context.fillText(Nc > 0 ? 'Nova ' + Math.ceil(Nc) + 's' : 'Nova ready · E', 88, BarY + 73)}
 
  /* time */
  const Cfg = Modes[ModeKey];
@@ -1844,6 +1895,13 @@ function DrawHud(){
  Context.beginPath(); Context.roundRect(B.X, B.Y, B.W, B.H, 8); Context.fill(); Context.stroke();
  Context.fillStyle = AutoAim ? '#07131a' : '#e8ecff'; Context.textAlign = 'center'; Context.font = '700 13px "Chakra Petch",sans-serif';
  Context.fillText('Auto-aim: ' + (AutoAim ? 'ON' : 'OFF') + (InputMode === 'key' ? ' (Q)' : ''), B.X + B.W / 2, B.Y + 21);
+ if(InputMode === 'touch'){
+  const G = GearBtn(), Cx = G.X + G.W / 2, Cy = G.Y + G.H / 2;
+  Context.fillStyle = '#151a36'; Context.strokeStyle = '#4ff0d6'; Context.lineWidth = 2; Context.beginPath(); Context.roundRect(G.X, G.Y, G.W, G.H, 8); Context.fill(); Context.stroke();
+  Context.strokeStyle = '#e8ecff'; Context.beginPath(); Context.arc(Cx, Cy, 5.5, 0, Tau);
+  for(let I = 0; I < 8; I++){const A = I / 8 * Tau; Context.moveTo(Cx + Math.cos(A) * 8, Cy + Math.sin(A) * 8); Context.lineTo(Cx + Math.cos(A) * 11, Cy + Math.sin(A) * 11)}
+  Context.stroke();
+ }
 
  if(!AutoAim && Mode === 'play'){
   Context.fillStyle = '#8f98c8'; Context.textAlign = 'right'; Context.font = '700 12px "Chakra Petch",sans-serif';
@@ -1864,7 +1922,7 @@ function DrawHud(){
  ElemNames.forEach((N, I) => {
   const X = Width / 2 - 100 + I * 52, Y = Height - 26 - SafeBottom;
   Context.globalAlpha = Elem[N] ? 1 : .3; Context.fillStyle = Elems[N].Color; Context.font = '700 14px "Chakra Petch",sans-serif'; Context.textAlign = 'left';
-  Context.fillText(Elems[N].Glyph + ' ' + Elem[N], X, Y);
+  Poly(X + 6, Y - 5, 7, ElemSides[N], ElemRot[N]); Context.fill(); Context.fillText(Elem[N], X + 19, Y);
  });
  Context.globalAlpha = 1;
 
@@ -1889,8 +1947,8 @@ function DrawHud(){
  }
 
  if(InputMode === 'touch' && Mode === 'play'){
-  DrawJoy(Joys.Move, Width * .17, Height - SafeBottom - 90, 'Move');
-  DrawJoy(Joys.Aim, Width * .83, Height - SafeBottom - 90, 'Aim');
+  DrawJoy(Joys.Move, Width * (Settings.Lefty ? .83 : .17), Height - SafeBottom - 90, 'Move'); DrawTouchBtns();
+  DrawJoy(Joys.Aim, Width * (Settings.Lefty ? .17 : .83), Height - SafeBottom - 90, 'Aim');
  }
 }
 
@@ -1900,11 +1958,308 @@ function Loop(Stamp){
  const Dt = Math.min(.05, (Stamp - LastTime) / 1000 || 0); LastTime = Stamp;
  const Blocked = InputMode === 'touch' && Height > Width;
  if(Player){
-  UpdateFx(Dt);
-  if(Mode === 'play' && !Blocked) Update(Dt);
+  UpdateFx(Dt); HitStop -= Dt; PerfAvg = PerfAvg * .96 + Dt * .04; ParticleCap = Settings.Reduce ? 90 : PerfAvg > .026 ? 140 : 350;
+  if(Mode === 'play' && !Blocked && HitStop <= 0){Update(Dt); BoltFx(Dt); TraitTick(Dt)}
  }else AttractUpdate(Dt);
  Draw();
 }
+
+/* ---------- v3: dash, hit-stop, shard workshop, recap + share, perf guard ---------- */
+let HitStop = 0, ParticleCap = 350, PerfAvg = .016, LastGain = 0, ShareText = '';
+let ShakeOn = StorageGet('ShapeSwarmShake') !== '0', Meta = {Shards: 0, Up: {}};
+try{const M = JSON.parse(StorageGet('ShapeSwarmMeta') || 'null'); if(M && typeof M.Shards === 'number') Meta = {Shards: M.Shards, Up: M.Up || {}}}catch(Err){}
+const SaveMeta = () => StorageSet('ShapeSwarmMeta', JSON.stringify(Meta));
+const Workshop = [
+ {Key: 'Vigor', Name: 'Vigor', Perk: '+10 max HP', Glyph: '✚', Mult: 1},
+ {Key: 'Might', Name: 'Might', Perk: '+2 damage', Glyph: '●', Mult: 1.2},
+ {Key: 'Haste', Name: 'Haste', Perk: '+5% fire rate', Glyph: '▲', Mult: 1.5},
+ {Key: 'Plate', Name: 'Plating', Perk: '+1 defense', Glyph: '▣', Mult: 1},
+ {Key: 'Thrust', Name: 'Thrusters', Perk: '+4% move speed', Glyph: '▶', Mult: 1},
+ {Key: 'Magnet', Name: 'Magnet', Perk: '+20 pickup range', Glyph: '◐', Mult: .8},
+ {Key: 'Scholar', Name: 'Scholar', Perk: '+6% experience', Glyph: '★', Mult: 1},
+ {Key: 'Fortune', Name: 'Fortune', Perk: '+4% luck', Glyph: '♣', Mult: 1.2},
+ {Key: 'Leech', Name: 'Leech', Perk: '+0.5% lifesteal', Glyph: '◆', Mult: 1.3},
+ {Key: 'Quick', Name: 'Quickstep', Perk: '-0.15s dash cooldown', Glyph: '»', Mult: 1},
+ {Key: 'NovaC', Name: 'Nova Core', Perk: '-1.5s nova cooldown', Glyph: '✱', Mult: 1.2},
+ {Key: 'Spare', Name: 'Reroll', Perk: '+1 reroll', Glyph: '↻', Mult: 1.5, Max: 3},
+ {Key: 'Head', Name: 'Head Start', Perk: '+1 upgrade at start', Glyph: '⬆', Mult: 2, Max: 3}
+];
+const WorkshopCost = (L, W) => Math.round(([15, 30, 50, 80, 120][L] ?? 0) * (W.Mult || 1));
+
+const NewRunV3 = NewRun;
+NewRun = function(){
+ NewRunV3();
+ const U = Meta.Up; Stats.MaximumHealth += 10 * (U.Vigor || 0); Player.Hp = Stats.MaximumHealth;
+ FillStats(); EliteT = 20; Stats.Damage += 2 * (U.Might || 0); Stats.Defense += (U.Plate || 0); Stats.MovementSpeed *= 1 + .04 * (U.Thrust || 0); Stats.PickupRange += 20 * (U.Magnet || 0); Stats.ExperienceBonus += .06 * (U.Scholar || 0); Stats.Luck += .04 * (U.Fortune || 0); Stats.Lifesteal += .005 * (U.Leech || 0); Pending += (U.Head || 0); Stats.FireRate *= 1 + .05 * (U.Haste || 0); Rerolls += (U.Spare || 0);
+ if(Mut.Glass){Stats.MaximumHealth = Math.round(Stats.MaximumHealth * .5); Player.Hp = Stats.MaximumHealth; Stats.Damage *= 1.6}
+ if(Mut.NoRegen) Stats.Regeneration = 0;
+ if(Mut.Heavy){Stats.MovementSpeed *= .75; Stats.Damage *= 1.35}
+ if(Mut.Frenzy){Stats.FireRate *= 1.5; Stats.MaximumHealth = Math.round(Stats.MaximumHealth * .75); Player.Hp = Math.min(Player.Hp, Stats.MaximumHealth)}
+ if(Mut.Armored) Stats.ExperienceBonus += .3;
+};
+
+function Dash(){
+ if(Mode !== 'play' || !Player || (Player.DashCd || 0) > 0) return;
+ let Dx = (Keys['d'] || Keys['arrowright'] ? 1 : 0) - (Keys['a'] || Keys['arrowleft'] ? 1 : 0), Dy = (Keys['s'] || Keys['arrowdown'] ? 1 : 0) - (Keys['w'] || Keys['arrowup'] ? 1 : 0);
+ if(Joys.Move){Dx += Joys.Move.Dx / JoyRadius; Dy += Joys.Move.Dy / JoyRadius}
+ const L = Math.hypot(Dx, Dy);
+ if(L < .2){Dx = Math.cos(Aim); Dy = Math.sin(Aim)}else{Dx /= L; Dy /= L}
+ Player.KnockX = Dx * 950; Player.KnockY = Dy * 950; Player.Inv = Math.max(Player.Inv, .35); Player.DashCd = DashMax();
+ Burst(Player.X, Player.Y, Elems[LastElem].Color, 14, 220, .4); Ring(Player.X, Player.Y, '#ffffff', 40, .3);
+ PlayTone(300, .12, 'sawtooth', .08, 720);
+}
+
+const KillEnemyV3 = KillEnemy;
+KillEnemy = function(En){KillEnemyV3(En);
+ if(Mut.Volatile){Ring(En.X, En.Y, '#ff8fd0', 90, .3); if(Math.hypot(En.X - Player.X, En.Y - Player.Y) < 90 + En.Radius) HurtPlayer(8)}
+ if(Mut.Blood) Player.Hp = Math.min(Stats.MaximumHealth, Player.Hp + Stats.MaximumHealth * .012);
+ if(En.Kind === 4 || En.Elite){HitStop = .12; Shake = Math.max(Shake, 14)}};
+
+const GameOverV3 = GameOver;
+GameOver = function(Won){
+ const Prev = Best[ModeKey] || 0, Score = Math.floor(RunStats.Time);
+ LastGain = Math.max(1, Math.round((RunStats.Kills / 8 + Round * 4 + RunStats.Time / 30 + (Won ? 25 : 0)) * (1 + .2 * Object.values(Mut).filter(Boolean).length)));
+ Meta.Shards += LastGain; SaveMeta();
+ const Mk = ModeKey, Rd = Round, Lv = Player.Level, Kl = RunStats.Kills, Tm = FormatTime(RunStats.Time), El = SelElem;
+ GameOverV3(Won);
+ ShareText = 'Shape Swarm · ' + Mk + ' · ' + (Won ? 'Victory' : 'Fell') + ' at round ' + Rd + ' · Lv ' + Lv + ' · ' + Kl + ' kills · ' + Tm + ' with ' + El;
+ const Row = Ui.querySelector('.Row'); if(!Row) return;
+ Row.insertAdjacentHTML('beforebegin', `<div class="Recap">+${LastGain} shards ◆ (total ${Meta.Shards})${Score > Prev ? '<br>★ New best time!' : ''}</div>`);
+ Row.insertAdjacentHTML('beforeend', '<button class="Btn Alt" data-act="share">Share run</button>');
+};
+
+Ui.addEventListener('click', Ev => {
+ const B = Ev.target.closest('button'); if(!B) return;
+ const D = B.dataset;
+ if(D.up){
+  const W = Workshop.find(X => X.Key === D.up), L = Meta.Up[D.up] || 0, C = W ? WorkshopCost(L, W) : 0;
+  if(W && L < (W.Max || 5) && Meta.Shards >= C){Meta.Shards -= C; Meta.Up[D.up] = L + 1; SaveMeta()}
+  ShowMenu(); Ev.stopImmediatePropagation();
+ }else if(D.act === 'shake'){
+  ShakeOn = !ShakeOn; StorageSet('ShapeSwarmShake', ShakeOn ? '1' : '0'); ShowMenu(); Ev.stopImmediatePropagation();
+ }else if(D.act === 'share'){
+  (navigator.clipboard ? navigator.clipboard.writeText(ShareText) : Promise.reject()).then(() => {B.textContent = 'Copied!'}).catch(() => {B.textContent = 'Copy failed'});
+  Ev.stopImmediatePropagation();
+ }
+}, true);
+
+/* ---------- v4: settings, music, mutators, synergies, nova, traits, bosses, pause, palette ---------- */
+const Settings = Object.assign({Master: .8, Music: .5, Sfx: 1, Shake: true, Reduce: matchMedia('(prefers-reduced-motion: reduce)').matches, Cb: false, Lefty: false}, (() => {try{return JSON.parse(StorageGet('ShapeSwarmSettings') || '{}') || {}}catch(Err){return {}}})());
+let Mut = Object.assign({Glass: false, Swarm: false, Fast: false, NoRegen: false}, (() => {try{return JSON.parse(StorageGet('ShapeSwarmMut') || '{}') || {}}catch(Err){return {}}})());
+let MusicStep = 0, MusicNext = 0;
+const CbElem = {Fire: '#D55E00', Water: '#56B4E9', Earth: '#F0E442', Wind: '#009E73'}, CbEnemy = ['#CC79A7', '#F0E442', '#0072B2', '#E69F00', '#D55E00'];
+const OrigElem = Object.fromEntries(ElemNames.map(N => [N, Elems[N].Color])), OrigEnemy = EnemyTypes.map(T => T.Color);
+const BoltSides = E => Settings.Cb ? {Fire: 3, Water: 0, Earth: 4, Wind: 6}[E] : 0;
+function ApplySettings(){
+ SfxVol = Settings.Sfx * Settings.Master; ShakeOn = Settings.Shake && !Settings.Reduce;
+ document.body.classList.toggle('Reduce', !!Settings.Reduce);
+ ElemNames.forEach(N => {Elems[N].Color = Settings.Cb ? CbElem[N] : OrigElem[N]});
+ EnemyTypes.forEach((T, I) => {T.Color = Settings.Cb ? CbEnemy[I] : OrigEnemy[I]});
+ StorageSet('ShapeSwarmSettings', JSON.stringify(Settings));
+}
+ApplySettings();
+
+/* procedural music: tempo and layers follow the round, boss rounds get a darker mix */
+function MTone(F, D, T, V, At, F2){
+ const A = AudioEngine, O = A.createOscillator(), G = A.createGain(), Vv = Math.max(.0001, V * Settings.Music * Settings.Master);
+ O.type = T; O.frequency.setValueAtTime(F, At); O.frequency.exponentialRampToValueAtTime(Math.max(1, F2 || F), At + D);
+ G.gain.setValueAtTime(.0001, At); G.gain.exponentialRampToValueAtTime(Vv, At + .01); G.gain.exponentialRampToValueAtTime(.0001, At + D);
+ O.connect(G); G.connect(A.destination); O.start(At); O.stop(At + D + .02);
+}
+function MusicTick(){
+ const A = AudioEngine;
+ if(!A || A.state !== 'running' || !SoundEnabled || Settings.Music <= 0 || Mode === 'over' || Mode === 'dying') return;
+ const Live = Mode === 'play', Boss = Live && Round % 5 === 0, Int = Live ? Math.min(1, Round / 10) : 0, Dur = Boss ? .15 : .22 - .04 * Int;
+ if(MusicNext < A.currentTime) MusicNext = A.currentTime + .05;
+ while(MusicNext < A.currentTime + .5){
+  const I = MusicStep++, Root = [55, 43.65, 65.41, 49][Math.floor(I / 8) % 4], At = MusicNext;
+  if(I % 4 === 0) MTone(120, .18, 'sine', .5, At, 42);
+  if(I % 2 === 0) MTone(Root * 2, Dur * 1.8, 'triangle', .22, At);
+  if(Live || I % 2 === 0) MTone(Root * 8 * [1, 1.2, 1.5, 2][I % 4], Dur, 'square', .05 * (.4 + Int), At);
+  if(Boss && I % 8 === 0) MTone(Root * 2.83, Dur * 4, 'sawtooth', .08, At);
+  MusicNext += Dur;
+ }
+}
+setInterval(MusicTick, 200);
+
+/* bolt trails per element */
+function BoltFx(Dt){
+ for(const Bt of Bolts){
+  if(Particles.length >= ParticleCap || Math.random() > Dt * 45) continue;
+  const C = Elems[Bt.Elem].Color, P = {X: Bt.X, Y: Bt.Y, Vx: RandRange(-25, 25), Vy: RandRange(-25, 25), Life: .35, MaxLife: .35, Color: C, Size: 2};
+  if(Bt.Elem === 'Fire'){P.Vy = RandRange(-70, -25); P.Size = 2.6; P.Life = P.MaxLife = .45}
+  else if(Bt.Elem === 'Water'){P.Vy = RandRange(20, 70); P.Size = 1.8}
+  else if(Bt.Elem === 'Earth'){P.Color = '#8a6a3f'; P.Size = 3.4; P.Life = P.MaxLife = .5}
+  else{P.Vx = -Bt.Vx * .12; P.Vy = -Bt.Vy * .12; P.Size = 1.5; P.Life = P.MaxLife = .2}
+  Particles.push(P);
+ }
+}
+
+/* element synergies */
+const ApplyElementV4 = ApplyElement;
+ApplyElement = function(En, Bt){
+ const HadBurn = !!En.Burn, HadSlow = En.SlowT > 0, Dps = HadBurn ? En.Burn.Dps : 0;
+ ApplyElementV4(En, Bt);
+ if(Bt.Elem === 'Wind' && HadBurn){
+  for(const O of Enemies) if(O !== En && !O.Burn && O.SpawnLeft <= 0 && Math.hypot(O.X - En.X, O.Y - En.Y) < 90) O.Burn = {T: 2, Dps: Dps * .7};
+  Ring(En.X, En.Y, Elems.Fire.Color, 90, .35); FloatText(En.X, En.Y - 20, 'SPREAD', Elems.Fire.Color);
+ }
+ if(Bt.Elem === 'Earth' && HadSlow){En.StunT = Math.max(En.StunT, 1.2); Ring(En.X, En.Y, Elems.Water.Color, En.Radius * 2.5, .35); FloatText(En.X, En.Y - 20, 'FROZEN', Elems.Water.Color)}
+ if(Bt.Elem === 'Water' && HadBurn){
+  En.Burn = null; Ring(En.X, En.Y, '#ffffff', 70, .35); FloatText(En.X, En.Y - 20, 'STEAM', '#ffffff');
+  for(const O of Enemies) if(O !== En && O.Hp > 0 && O.SpawnLeft <= 0 && Math.hypot(O.X - En.X, O.Y - En.Y) < 70) DamageEnemy(O, Bt.Damage * .6, false, O.X - En.X, O.Y - En.Y, '#ffffff', 40);
+ }
+};
+
+/* active ability: nova, powered by your strongest element */
+function Nova(){
+ if(Mode !== 'play' || !Player || (Player.NovaCd || 0) > 0) return;
+ const Own = ElemNames.reduce((A, N) => A + Elem[N], 0), Top = ElemNames.reduce((A, N) => Elem[N] > Elem[A] ? N : A, 'Fire'), R = 200 + Stats.BlastRadius, C = Elems[Top].Color;
+ Player.NovaCd = NovaMax(); Shake = Math.max(Shake, 10); HitStop = .08;
+ Ring(Player.X, Player.Y, C, R, .5); Burst(Player.X, Player.Y, C, 40, 320, .7); PlayTone(160, .4, 'sawtooth', .2, 40);
+ for(const En of Enemies){
+  if(En.SpawnLeft > 0 || Math.hypot(En.X - Player.X, En.Y - Player.Y) > R + En.Radius) continue;
+  DamageEnemy(En, Stats.Damage * (3 + Own * .5) * (1 + (Stats.NovaPower || 0)), false, En.X - Player.X, En.Y - Player.Y, C, Top === 'Wind' ? 260 : 120);
+  if(Top === 'Fire') En.Burn = {T: 3, Dps: Stats.Damage};
+  if(Top === 'Water'){En.SlowT = 3; En.SlowPct = .5}
+  if(Top === 'Earth') En.StunT = 1.2;
+ }
+}
+function TouchBtns(){const Y = Height - SafeBottom - 72; return [['Dash', Width / 2 - 44, Y, Player ? Player.DashCd || 0 : 0], ['Nova', Width / 2 + 44, Y, Player ? Player.NovaCd || 0 : 0]]}
+function DrawTouchBtns(){
+ for(const [N, X, Y, Cd] of TouchBtns()){
+  Context.globalAlpha = .8; Context.fillStyle = Cd > 0 ? '#151a36' : '#4ff0d6'; Context.strokeStyle = '#e8ecff'; Context.lineWidth = 2;
+  Context.beginPath(); Context.arc(X, Y, 28, 0, Tau); Context.fill(); Context.stroke();
+  Context.fillStyle = Cd > 0 ? '#8f98c8' : '#07131a'; Context.font = '700 12px "Chakra Petch",sans-serif'; Context.textAlign = 'center'; Context.fillText(Cd > 0 ? Math.ceil(Cd) : N, X, Y + 4);
+ }
+ Context.globalAlpha = 1;
+}
+
+/* enemy traits (shield / charger / healer) and boss types (Brute / Summoner / Spinner) */
+const DamageEnemyV4 = DamageEnemy;
+DamageEnemy = function(En, Amount, ...Rest){
+ if(Stats && Stats.Execute && En.Hp < En.MaxHp * .3) Amount *= 1 + Stats.Execute;
+ if(En.Shield > 0){
+  const Ab = Math.min(En.Shield, Amount); En.Shield -= Ab; Amount -= Ab; Ring(En.X, En.Y, '#4fb4ff', En.Radius * 1.6, .2);
+  if(Amount <= 0){En.Flash = .06; PlaySfx('Hit'); return}
+ }
+ DamageEnemyV4(En, Amount, ...Rest);
+};
+const SpawnEnemyV4 = SpawnEnemy;
+SpawnEnemy = function(Kind, Elite){
+ SpawnEnemyV4(Kind, Elite);
+ const En = Enemies[Enemies.length - 1]; if(!En) return;
+ if(Kind === 4 && !Elite){En.Boss = ['Brute', 'Summoner', 'Spinner'][Math.floor(Round / 5) % 3]; En.Color = {Brute: '#ff3b3b', Summoner: '#9b7bff', Spinner: '#ffc857'}[En.Boss]}
+ else if(!Elite && Kind <= 2 && Round >= 3){
+  const R = Math.random();
+  if(R < .10){En.Trait = 'shield'; En.Shield = En.MaxHp * .6}
+  else if(R < .17) En.Trait = 'charger';
+  else if(R < .22 && Round >= 5) En.Trait = 'healer';
+ }
+ if(Mut.Fast) En.Speed *= 1.25;
+ if(Mut.Armored){En.Hp *= 1.4; En.MaxHp *= 1.4}
+};
+function TraitTick(Dt){
+ if(Mut.Blood && Player.Hp > 1) Player.Hp = Math.max(1, Player.Hp - Dt * Stats.MaximumHealth * .01);
+ if(Mut.Elite){EliteT -= Dt; if(EliteT <= 0){EliteT = 25; SpawnEnemy(2, true)}}
+ for(const En of Enemies){
+  if(En.SpawnLeft > 0 || En.Hp <= 0) continue;
+  if(En.Trait === 'charger'){
+   En.TT = (En.TT ?? RandRange(1.5, 3)) - Dt;
+   if(En.TT <= 0 && !(En.Tele > 0)){En.Tele = .6; En.BaseSp = En.Speed; En.Speed = 0}
+   else if(En.Tele > 0){
+    En.Tele -= Dt;
+    if(En.Tele <= 0){En.Speed = En.BaseSp; const Dx = Player.X - En.X, Dy = Player.Y - En.Y, L = Math.hypot(Dx, Dy) || 1; En.KnockX = Dx / L * 750; En.KnockY = Dy / L * 750; En.TT = RandRange(2.5, 4)}
+   }
+  }else if(En.Trait === 'healer'){
+   En.TT = (En.TT ?? 1) - Dt;
+   if(En.TT <= 0){
+    En.TT = 1; Ring(En.X, En.Y, '#4ade80', 140, .5);
+    for(const O of Enemies) if(O !== En && O.Hp > 0 && O.Hp < O.MaxHp && Math.hypot(O.X - En.X, O.Y - En.Y) < 140){O.Hp = Math.min(O.MaxHp, O.Hp + O.MaxHp * .06); FloatText(O.X, O.Y - O.Radius, '+', '#4ade80')}
+   }
+  }else if(En.Boss === 'Summoner'){
+   En.TT = (En.TT ?? 4) - Dt;
+   if(En.TT <= 0 && Enemies.length < 120){
+    En.TT = 5.5; Ring(En.X, En.Y, En.Color, 120, .5);
+    for(let I = 0; I < 3; I++){SpawnEnemy(1); const M = Enemies[Enemies.length - 1]; M.X = Clamp(En.X + RandRange(-70, 70), 20, Arena - 20); M.Y = Clamp(En.Y + RandRange(-70, 70), 20, Arena - 20); M.SpawnLeft = M.SpawnTotal = .4}
+   }
+  }else if(En.Boss === 'Spinner'){
+   En.SpinA = (En.SpinA || 0) + Dt * 1.8; En.SW = (En.SW ?? 0) - Dt;
+   if(En.SW <= 0){En.SW = .14; EnemyShot(En, En.SpinA * 3)}
+  }
+ }
+}
+if(typeof UpdateDifficulty === 'function'){const UpdateDifficultyV4 = UpdateDifficulty; UpdateDifficulty = function(){UpdateDifficultyV4(); if(Mut.Swarm) Diff *= 1.25}}
+
+/* pause + settings screens */
+function RenderPause(){
+ const Chips = ElemNames.filter(N => Elem[N]).map(N => `<span class="PChip" style="color:${Elems[N].Color}">${ElemIcon(N, 14)} ${N} Lv ${Elem[N]}</span>`).join('');
+ Ui.className = 'On';
+ Ui.innerHTML = `<div class="Box"><div class="Panel"><h2>Paused</h2><p>Round ${Round} · ${ObjectiveText()}</p><div class="Chips" style="margin:8px 0 14px">${Chips}</div><div class="Row"><button class="PlayBtn" style="font-size:20px;padding:10px 28px;min-height:48px;animation:none" data-act="resume">Resume</button><button class="Btn Alt" data-act="restart">Restart</button><button class="Btn Alt" data-act="settings">Settings</button><button class="Btn Alt" data-act="menu">Quit to menu</button></div>${StatsHtml()}</div></div>`;
+}
+const PauseV4 = Pause;
+Pause = function(){PauseV4(); if(Mode === 'pause') RenderPause()};
+function RenderSettings(){
+ const Sl = (K, L) => `<label class="SetRow"><span>${L}</span><input type="range" min="0" max="100" value="${Math.round(Settings[K] * 100)}" data-set="${K}"></label>`;
+ const Tg = (K, L) => `<button class="Pick SetTog ${Settings[K] ? 'Sel' : ''}" data-tog="${K}"><span class="PName">${L}</span><span class="PSub">${Settings[K] ? 'On' : 'Off'}</span></button>`;
+ Ui.className = 'On';
+ Ui.innerHTML = `<div class="Box"><h2>Settings</h2><div class="Panel">${Sl('Master', 'Master volume')}${Sl('Music', 'Music')}${Sl('Sfx', 'Sound effects')}</div><div class="PGrid2" style="margin:10px 0 14px">${Tg('Shake', 'Screen shake')}${Tg('Reduce', 'Reduced motion')}${Tg('Cb', 'Colorblind palette')}${Tg('Lefty', 'Left-handed touch')}</div><button class="Btn" data-act="back">Back</button></div>`;
+}
+Ui.addEventListener('input', Ev => {const K = Ev.target.dataset && Ev.target.dataset.set; if(K){Settings[K] = Ev.target.value / 100; ApplySettings()}});
+Ui.addEventListener('change', Ev => {if(Ev.target.dataset && Ev.target.dataset.set) PlaySfx('Pickup')});
+Ui.addEventListener('click', Ev => {
+ const B = Ev.target.closest('button'); if(!B) return;
+ const D = B.dataset, Stop = () => Ev.stopImmediatePropagation();
+ if(D.mut){Mut[D.mut] = !Mut[D.mut]; StorageSet('ShapeSwarmMut', JSON.stringify(Mut)); ShowMenu(); Stop()}
+ else if(D.tog){Settings[D.tog] = !Settings[D.tog]; ApplySettings(); RenderSettings(); Stop()}
+ else if(D.act === 'settings'){RenderSettings(); Stop()}
+ else if(D.act === 'back'){Mode === 'pause' ? RenderPause() : ShowMenu(); Stop()}
+ else if(D.act === 'restart'){NewRun(); Stop()}
+
+}, true);
+
+/* ---------- v5: icons, items, fullscreen, tabs ---------- */
+let MenuTab = 'run', EliteT = 20;
+const ElemSides = {Fire: 3, Water: 0, Earth: 4, Wind: 4}, ElemRot = {Fire: 0, Water: 0, Earth: Math.PI / 4, Wind: 0};
+function ElemIcon(N, Px){
+ const P = {Fire: '<polygon points="12,3 21.5,19.5 2.5,19.5"/>', Water: '<circle cx="12" cy="12" r="9"/>', Earth: '<rect x="4" y="4" width="16" height="16" rx="2.5"/>', Wind: '<polygon points="12,2 22,12 12,22 2,12"/>'}[N];
+ return `<svg class="ElemIco" width="${Px}" height="${Px}" viewBox="0 0 24 24" fill="currentColor" style="color:${Elems[N].Color}">${P}</svg>`;
+}
+const GearBtn = () => ({X: Width - 138 - 44, Y: SafeTop + 48, W: 36, H: 32});
+const DashMax = () => (1.6 - .15 * (Meta.Up.Quick || 0)) * (1 - Math.min(.5, (Stats && Stats.DashHaste) || 0));
+const NovaMax = () => 14 - 1.5 * (Meta.Up.NovaC || 0);
+function FillStats(){if(!Stats) return; for(const K of ['DamageMult', 'Execute', 'DashHaste', 'NovaPower', 'OrbHeal']) if(typeof Stats[K] !== 'number') Stats[K] = 0}
+Items.push(
+ Item('Overdrive', '✹', 'DamageMult', .08, {IsPct: 1, Unit: 'Damage Bonus'}),
+ Item('Executioner', '✖', 'Execute', .12, {IsPct: 1, Unit: 'Execute Bonus'}),
+ Item('Quick Dash', '»', 'DashHaste', .08, {IsPct: 1, Unit: 'Dash Haste'}),
+ Item('Nova Surge', '✺', 'NovaPower', .15, {IsPct: 1, Unit: 'Nova Power'}),
+ Item('Vitality', '❖', 'OrbHeal', .4, {Unit: 'Heal per orb'})
+);
+StatList.push(['DamageMult', 'Damage Bonus', Percent], ['Execute', 'Execute Bonus', Percent], ['DashHaste', 'Dash Haste', Percent], ['NovaPower', 'Nova Power', Percent], ['OrbHeal', 'Orb Heal', V => Round2(V)]);
+StatCaps.DashHaste = .5;
+const GainXpV5 = GainXp;
+GainXp = function(V){GainXpV5(V); if(Stats && Stats.OrbHeal && Player && Mode === 'play') Player.Hp = Math.min(Stats.MaximumHealth, Player.Hp + Stats.OrbHeal)};
+const LoadRunV5 = LoadRun;
+LoadRun = function(M){const Ok = LoadRunV5(M); if(Ok) FillStats(); return Ok};
+Ui.addEventListener('click', Ev => {
+ const B = Ev.target.closest('button'); if(B && B.dataset.tab){MenuTab = B.dataset.tab; ShowMenu(); Ev.stopImmediatePropagation()}
+}, true);
+
+/* phones: go fullscreen + landscape lock as soon as the player holds the phone sideways and taps */
+const TouchDevice = matchMedia('(pointer:coarse)').matches;
+function TryFullscreen(){
+ if(!TouchDevice || innerWidth <= innerHeight || document.fullscreenElement) return;
+ try{
+  const R = document.documentElement.requestFullscreen({navigationUI: 'hide'});
+  if(R && R.then) R.then(() => {try{screen.orientation.lock('landscape').catch(() => {})}catch(Err){}}).catch(() => {});
+ }catch(Err){}
+}
+matchMedia('(orientation:landscape)').addEventListener('change', () => setTimeout(TryFullscreen, 200));
+addEventListener('orientationchange', () => setTimeout(TryFullscreen, 300));
+addEventListener('click', TryFullscreen, true);
+addEventListener('touchend', TryFullscreen, true);
+TryFullscreen();
 
 /* ---------- attract mode: a live demo fights behind the menu ---------- */
 const Demo = {T: 0, Foes: [], Shots: [], Fx: [], Cd: 0, Spawn: 0, Aim: 0, Shot: 0, Kills: 0};
